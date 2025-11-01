@@ -3,14 +3,44 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{754FC069-D67B-A9D7-50A1-8D1CA196D8F1}"
-	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api-gateway", "api-gateway", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8ADCFC1D-320A-4E61-A908-F107F7DD57FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Gateway", "api-gateway\src\API.Gateway\API.Gateway.csproj", "{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{F7E081F7-B290-4779-8749-88FD2B7FDF5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity-service", "identity-service", "{4B440A1B-3220-42EE-A69C-0E7C1A14822E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6736CBCD-AF35-474F-83EF-F417AFAF7698}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Domain", "services\identity-service\src\Identity.Domain\Identity.Domain.csproj", "{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C}"
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8ADCFC1D-320A-4E61-A908-F107F7DD57FA} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{1A4ACEBF-AFDF-4DAF-81BC-3AAD0D576D7E} = {8ADCFC1D-320A-4E61-A908-F107F7DD57FA}
+		{4B440A1B-3220-42EE-A69C-0E7C1A14822E} = {F7E081F7-B290-4779-8749-88FD2B7FDF5D}
+		{6736CBCD-AF35-474F-83EF-F417AFAF7698} = {4B440A1B-3220-42EE-A69C-0E7C1A14822E}
+		{BFEA00D1-B2C8-45DB-80A0-BB7149CDD17C} = {6736CBCD-AF35-474F-83EF-F417AFAF7698}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E31AAE27-74DF-45D0-923F-FA01F22A8814}
