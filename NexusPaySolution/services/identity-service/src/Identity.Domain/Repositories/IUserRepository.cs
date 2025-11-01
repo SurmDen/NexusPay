@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Entities;
+using Identity.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,22 +10,22 @@ namespace Identity.Domain.Repositories
 {
     public interface IUserRepository
     {
-        public Task<Guid> CreateUserAsync(string name, string email, string password);
+        public Task<User> CreateUserAsync(User user);
 
-        public Task UpdateUserPasswordAsync(Guid userId, string password);
+        public Task<User> UpdateUserPasswordAsync(Guid userId, Password password);
 
-        public Task UpdateUserNameAsync(Guid userId, string userName);
+        public Task<User> UpdateUserNameAsync(Guid userId, string userName);
 
-        public Task UpdateUserEmailAsync(Guid userId, string email);
+        public Task<User> UpdateUserEmailAsync(Guid userId, Email email);
 
-        public Task ActivateUserAsync(Guid userId);
+        public Task<User> ActivateUserAsync(Guid userId);
 
-        public Task DeleteUserAsync(Guid userId);
+        public Task<User> DeleteUserAsync(Guid userId);
 
         public Task<List<User>> GetUsersAsync();
 
         public Task<User> GetUserByIdAsync(Guid userId);
 
-        public Task<User> GetUserByEmailAndPasswordAsync(string email, string password);
+        public Task<User> GetUserByEmailAndPasswordAsync(Email email, Password password);
     }
 }
