@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Infrastructure.MessageBus.RabbitMQ
 {
-    internal class RabbitConsumer : IConsumer, IDisposable
+    public class RabbitConsumer : IConsumer, IDisposable
     {
         public RabbitConsumer(IOptions<RabbitMQOptions> options)
         {

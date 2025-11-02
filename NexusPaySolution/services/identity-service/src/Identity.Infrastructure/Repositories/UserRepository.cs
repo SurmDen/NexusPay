@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Entities;
+using Identity.Domain.Exceptions;
 using Identity.Domain.Repositories;
 using Identity.Domain.ValueObjects;
 using Identity.Infrastructure.Data;
@@ -19,6 +20,13 @@ namespace Identity.Infrastructure.Repositories
         {
             try
             {
+                User? dbUser = await _context .Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserEmail.Value == user.UserEmail.Value);
+
+                if (dbUser != null)
+                {
+                    throw new InvalidEmailException("User with current email is already exists");
+                }
+
                 _context.Users.Add(user);
 
                 await _context.SaveChangesAsync();
@@ -39,7 +47,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 user.ChangePassword(password);
@@ -62,7 +70,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 user.UpdateUserName(userName);
@@ -81,11 +89,18 @@ namespace Identity.Infrastructure.Repositories
         {
             try
             {
+                User? dbUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserEmail.Value == email.Value);
+
+                if (dbUser != null)
+                {
+                    throw new InvalidEmailException("User with current email is already exists");
+                }
+
                 User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 user.UpdateUserEmail(email);
@@ -108,7 +123,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 if (user.IsActive)
@@ -138,7 +153,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 _context.Users.Remove(user);
@@ -178,7 +193,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with id: {userId} was null");
+                    throw new NotFoundException($"user with id: {userId} was null");
                 }
 
                 return user;
@@ -199,7 +214,7 @@ namespace Identity.Infrastructure.Repositories
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"user with email: {email.Value} was null");
+                    throw new NotFoundException($"user with email: {email.Value} was null");
                 }
 
                 return user;

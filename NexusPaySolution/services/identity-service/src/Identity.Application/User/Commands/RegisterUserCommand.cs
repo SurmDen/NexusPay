@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Identity.Application.User.DTOs;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Application.User.Commands
 {
-    public class RegisterUserCommand : IRequest<Guid>
+    public class RegisterUserCommand : IRequest<UserDto>
     {
         [Required]
         public string UserName { get; set; } = string.Empty;

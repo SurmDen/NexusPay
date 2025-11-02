@@ -8,7 +8,7 @@ namespace Identity.Domain.Entities
     {
         private User() { }
 
-        public User(string name, Email email, Password password)
+        public User(string name, Email email, Password password, RoleName roleName)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -19,9 +19,10 @@ namespace Identity.Domain.Entities
             UserName = name;
             UserEmail = email;
             Password = password;
-            IsActive = true;
+            IsActive = false;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+            RoleName = roleName;
 
             _domainEvents.Add(new UserRegisteredEvent(name, email.Value, Id));
         }
@@ -36,7 +37,11 @@ namespace Identity.Domain.Entities
 
         public DateTime CreatedAt { get; private set; }
 
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; private set; }
+
+        public RoleName RoleName { get; set; }
+
+        public Guid RoleId { get; private set; }
 
 
         private List<DomainEvent> _domainEvents = new();
@@ -47,7 +52,6 @@ namespace Identity.Domain.Entities
         {
             _domainEvents.Clear();
         }
-
 
         public void ChangePassword(Password password)
         {

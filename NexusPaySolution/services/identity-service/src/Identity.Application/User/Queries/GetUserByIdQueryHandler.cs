@@ -33,6 +33,7 @@ namespace Identity.Application.User.Queries
                     IsActive = user.IsActive,
                     CreatedAt = user.CreatedAt,
                     UpdatedAt = user.UpdatedAt,
+                    Id = user.Id
                 };
 
                 return userDto;

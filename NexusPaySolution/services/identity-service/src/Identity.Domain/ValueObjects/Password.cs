@@ -16,7 +16,7 @@ namespace Identity.Domain.ValueObjects
             Hash = GenerateHash(password);
         }
 
-        public string Hash { get; set; }
+        public string Hash { get; }
 
         private string GenerateHash(string value)
         {
@@ -36,5 +36,7 @@ namespace Identity.Domain.ValueObjects
         {
             return GenerateHash(password) == Hash;
         }
+
+        public override string ToString() => Hash;
     }
 }

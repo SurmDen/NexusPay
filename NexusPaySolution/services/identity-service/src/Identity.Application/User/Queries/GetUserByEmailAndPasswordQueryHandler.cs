@@ -36,7 +36,8 @@ namespace Identity.Application.User.Queries
                     Email = user.UserEmail.Value,
                     IsActive = user.IsActive,
                     CreatedAt = user.CreatedAt,
-                    UpdatedAt = user.UpdatedAt
+                    UpdatedAt = user.UpdatedAt,
+                    Id = user.Id,
                 };
 
                 return userDto;

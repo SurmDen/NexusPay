@@ -1,16 +1,11 @@
 ﻿using Identity.Domain.Repositories;
-using Identity.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Identity.Domain.ValueObjects;
+using Identity.Application.User.DTOs;
 
 namespace Identity.Application.User.Commands
 {
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
         public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator)
         {
@@ -21,7 +16,7 @@ namespace Identity.Application.User.Commands
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
 
-        public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -29,7 +24,9 @@ namespace Identity.Application.User.Commands
 
                 Email email = new Email(request.Email);
 
-                var user = new Domain.Entities.User(request.UserName, email, password);
+                RoleName roleName = new RoleName("User");
+
+                var user = new Domain.Entities.User(request.UserName, email, password, roleName);
 
                 var registeredUser = await _userRepository.CreateUserAsync(user);
 
@@ -40,7 +37,17 @@ namespace Identity.Application.User.Commands
 
                 user.ClearEventList();
 
-                return registeredUser.Id;
+                UserDto userDto = new UserDto()
+                {
+                    UserName = registeredUser.UserName,
+                    Email = registeredUser.UserEmail.Value,
+                    IsActive = registeredUser.IsActive,
+                    Id = registeredUser.Id,
+                    CreatedAt = registeredUser.CreatedAt,
+                    UpdatedAt = registeredUser.UpdatedAt
+                };
+
+                return userDto;
             }
             catch (Exception)
             {

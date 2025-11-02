@@ -35,6 +35,7 @@ namespace Identity.Application.User.Queries
                         IsActive = u.IsActive,
                         CreatedAt = u.CreatedAt,
                         UpdatedAt = u.UpdatedAt,
+                        Id = u.Id
                     };
                 });
 
