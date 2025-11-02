@@ -1,0 +1,34 @@
+﻿using Identity.Application.Interfaces;
+using Identity.Domain.Events;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Identity.Application.User.Handlers
+{
+    public class UserActivatedEventHandler : INotificationHandler<UserActivatedEvent>
+    {
+        public UserActivatedEventHandler(IProducer producer)
+        {
+            _producer = producer;
+        }
+
+        private readonly IProducer _producer;
+
+        public async Task Handle(UserActivatedEvent notification, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _producer.SendObject("user.activated", notification);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+    }
+}
