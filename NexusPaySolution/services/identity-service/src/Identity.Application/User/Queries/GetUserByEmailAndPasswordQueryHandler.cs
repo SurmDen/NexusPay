@@ -38,6 +38,7 @@ namespace Identity.Application.User.Queries
                     CreatedAt = user.CreatedAt,
                     UpdatedAt = user.UpdatedAt,
                     Id = user.Id,
+                    RoleName = user.RoleName.Value
                 };
 
                 return userDto;

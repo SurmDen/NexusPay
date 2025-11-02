@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Identity.Application.Interfaces
 {
-    public interface ITokenService
+    public interface ICodeGenerator
     {
-        public string GenerateToken(string name, string email, Guid id, string role);
+        public int GenerateCode();
     }
 }

@@ -30,6 +30,7 @@ namespace Identity.API.Extentions
             services.AddSingleton<ITokenService, JwtTokenService>();
             services.AddSingleton<IProducer, RabbitProducer>();
             services.AddSingleton<IConsumer, RabbitConsumer>();
+            services.AddSingleton<ICodeGenerator, CodeGenerator>();
         }
     }
 }

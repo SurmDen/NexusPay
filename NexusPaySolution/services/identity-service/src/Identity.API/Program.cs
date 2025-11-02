@@ -1,5 +1,7 @@
 using Identity.API.Extentions;
 using Identity.Application.User.Commands;
+using Identity.Domain.Events;
+using Identity.Infrastructure.MessageBus.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     config.RegisterServicesFromAssembly(typeof(RegisterUserCommand).Assembly);
+    config.RegisterServicesFromAssembly(typeof(ConfirmUserEvent).Assembly);
 });
 
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -31,6 +34,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = builder.Configuration["Redis:InstanceName"];
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
+
+builder.Services.Configure<RabbitMQOptions>(builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddApplicationDbContext(builder.Configuration);
 

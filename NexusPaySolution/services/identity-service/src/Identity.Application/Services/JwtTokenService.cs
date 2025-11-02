@@ -16,13 +16,14 @@ namespace Identity.Application.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(string name, string email, Guid id)
+        public string GenerateToken(string name, string email, Guid id, string role)
         {
             List<Claim> claims = new List<Claim>()
             {
                  new Claim(ClaimTypes.Email, email),
                  new Claim(ClaimTypes.NameIdentifier, id.ToString()),
                  new Claim(ClaimTypes.Name, name),
+                 new Claim(ClaimTypes.Role, role)
             };
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"] ?? throw new InvalidOperationException("security key was null")));

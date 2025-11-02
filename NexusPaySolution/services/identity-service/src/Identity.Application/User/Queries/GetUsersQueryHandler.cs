@@ -1,4 +1,5 @@
 ﻿using Identity.Application.User.DTOs;
+using Identity.Domain.Entities;
 using Identity.Domain.Repositories;
 using MediatR;
 using System;
@@ -35,7 +36,8 @@ namespace Identity.Application.User.Queries
                         IsActive = u.IsActive,
                         CreatedAt = u.CreatedAt,
                         UpdatedAt = u.UpdatedAt,
-                        Id = u.Id
+                        Id = u.Id,
+                        RoleName = u.RoleName.Value
                     };
                 });
 

@@ -2,19 +2,25 @@
 using MediatR;
 using Identity.Domain.ValueObjects;
 using Identity.Application.User.DTOs;
+using Identity.Application.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Identity.Application.User.Commands
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
-        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator)
+        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator, ICodeGenerator codeGenerator, IDistributedCache cache)
         {
             _mediator = mediator;
+            _codeGenerator = codeGenerator;
             _userRepository = userRepository;
+            _cache = cache;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ICodeGenerator _codeGenerator;
+        IDistributedCache _cache;
 
         public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
@@ -30,6 +36,17 @@ namespace Identity.Application.User.Commands
 
                 var registeredUser = await _userRepository.CreateUserAsync(user);
 
+                int code = _codeGenerator.GenerateCode();
+
+                var cacheOptions = new DistributedCacheEntryOptions()
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                };
+
+                await _cache.SetStringAsync($"email_comfirmation_{user.UserEmail.Value}", $"{code}", cacheOptions);
+
+                registeredUser.AddConfirmationEvent(code);
+
                 foreach (var userEvents in registeredUser.DomainEvents)
                 {
                     await _mediator.Publish(userEvents);
@@ -44,7 +61,8 @@ namespace Identity.Application.User.Commands
                     IsActive = registeredUser.IsActive,
                     Id = registeredUser.Id,
                     CreatedAt = registeredUser.CreatedAt,
-                    UpdatedAt = registeredUser.UpdatedAt
+                    UpdatedAt = registeredUser.UpdatedAt,
+                    RoleName = registeredUser.RoleName.Value
                 };
 
                 return userDto;

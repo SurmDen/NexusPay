@@ -17,6 +17,8 @@ namespace Identity.Application.User.DTOs
 
         public bool IsActive { get; set; }
 
+        public string RoleName { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }

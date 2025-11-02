@@ -31,9 +31,11 @@ namespace Identity.API.Controllers
 
             try
             {
-                Guid userId = await _mediator.Send(registerUser);
+                UserDto user = await _mediator.Send(registerUser);
 
-                return Ok(new { message = "user created", user_id = userId, code = 200 });
+                string token = _tokenService.GenerateToken(user.UserName, user.Email, user.Id, user.RoleName);
+
+                return Ok(new { message = "user created, but not active. Confirmation code sent to email address", user = user, jwt_token = token, code = 200 });
             }
             catch (InvalidPasswordException e)
             {
@@ -57,6 +59,61 @@ namespace Identity.API.Controllers
             }
         }
 
+        [HttpPost("email/confirm")]
+        public async Task<IActionResult> ConfirmCodeAsync([FromBody] ConfirmEmailCommand emailCommand)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "invalid confirmation parameters", code = 400 });
+            }
+
+            try
+            {
+                bool codesEquals = await _mediator.Send(emailCommand);
+
+                if (codesEquals)
+                {
+                    return Ok(new { message = "email confirmed, user is active", code = 200 });
+                }
+                else
+                {
+                    return BadRequest(new { message = "invalid code, try again", code = 400 });
+                }
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(new { message = e.Message, code = 400 });
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+            catch (Exception)
+            {
+                return Problem(title: "Internal server error", statusCode: 500);
+            }
+        }
+
+        [HttpPost("code/refresh")]
+        public async Task<IActionResult> RefreshConfirmationCodeAsync([FromBody] GenerateCodeCommand generateCodeCommand)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { message = "invalid confirmation parameters", code = 400 });
+            }
+
+            try
+            {
+                await _mediator.Send(generateCodeCommand);
+
+                return Ok(new { message = "email confirmation code sended to email", code = 200 });
+            }
+            catch (Exception)
+            {
+                return Problem(title: "Internal server error", statusCode: 500);
+            }
+        }
+
         [HttpPost("auth")]
         public async Task<IActionResult> GetTokenAsync([FromBody] GetUserByEmailAndPasswordQuery query)
         {
@@ -69,7 +126,7 @@ namespace Identity.API.Controllers
             {
                 UserDto user = await _mediator.Send(query);
 
-                string token = _tokenService.GenerateToken(user.UserName, user.Email, user.Id);
+                string token = _tokenService.GenerateToken(user.UserName, user.Email, user.Id, user.RoleName);
 
                 return Ok(new { jwt_token = token, code = 200 });
             }
