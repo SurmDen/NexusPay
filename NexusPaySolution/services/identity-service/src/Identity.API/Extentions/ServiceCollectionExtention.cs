@@ -31,6 +31,7 @@ namespace Identity.API.Extentions
             services.AddSingleton<IProducer, RabbitProducer>();
             services.AddSingleton<IConsumer, RabbitConsumer>();
             services.AddSingleton<ICodeGenerator, CodeGenerator>();
+            services.AddSingleton<ILoggerService, LoggerService>();
         }
     }
 }

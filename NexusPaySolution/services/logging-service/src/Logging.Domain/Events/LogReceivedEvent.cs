@@ -1,12 +1,13 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Identity.Domain.Models
+namespace Logging.Domain.Events
 {
-    public class LogMessage 
+    public class LogReceivedEvent : INotification
     {
         public string ServiceName { get; set; } = string.Empty;
 
@@ -14,7 +15,7 @@ namespace Identity.Domain.Models
 
         public string Message { get; set; } = string.Empty;
 
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime Timestamp { get; set; }
 
         public string? Exception { get; set; }
 

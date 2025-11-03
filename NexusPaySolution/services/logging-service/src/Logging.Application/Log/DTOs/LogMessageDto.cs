@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Identity.Domain.Models
+namespace Logging.Application.Log.DTOs
 {
-    public class LogMessage 
+    public class LogMessageDto
     {
         public string ServiceName { get; set; } = string.Empty;
 
@@ -14,7 +14,7 @@ namespace Identity.Domain.Models
 
         public string Message { get; set; } = string.Empty;
 
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime Timestamp { get; set; }
 
         public string? Exception { get; set; }
 
