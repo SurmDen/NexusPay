@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Events;
+﻿using Identity.Application.Interfaces;
+using Identity.Domain.Events;
 using Identity.Domain.Repositories;
 using MediatR;
 using System;
@@ -11,14 +12,16 @@ namespace Identity.Application.User.Commands
 {
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     {
-        public DeleteUserCommandHandler(IUserRepository userRepository, IMediator mediator)
+        public DeleteUserCommandHandler(IUserRepository userRepository, IMediator mediator, ILoggerService loggerService)
         {
             _mediator = mediator;
             _userRepository = userRepository;
+            _loggerService = loggerService;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ILoggerService _loggerService;
 
         public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
@@ -27,9 +30,12 @@ namespace Identity.Application.User.Commands
                 var user = await _userRepository.DeleteUserAsync(request.UserId);
 
                 await _mediator.Publish(new UserDeletedEvent(user.Id));
+
+                await _loggerService.LogInfo($"User with id: {request.UserId} deleted", "DeleteUserCommandHandler.Handle");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "DeleteUserCommandHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

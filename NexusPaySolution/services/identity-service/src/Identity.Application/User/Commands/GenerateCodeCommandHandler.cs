@@ -14,16 +14,18 @@ namespace Identity.Application.User.Commands
 {
     public class GenerateCodeCommandHandler : IRequestHandler<GenerateCodeCommand>
     {
-        public GenerateCodeCommandHandler(IMediator mediator, IDistributedCache cache, ICodeGenerator codeGenerator)
+        public GenerateCodeCommandHandler(IMediator mediator, IDistributedCache cache, ICodeGenerator codeGenerator, ILoggerService loggerService)
         {
             _mediator = mediator;
             _cache = cache;
             _codeGenerator = codeGenerator;
+            _loggerService = loggerService;
         }
 
         private readonly IMediator _mediator;
         private readonly IDistributedCache _cache;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly ILoggerService _loggerService;
 
         public async Task Handle(GenerateCodeCommand request, CancellationToken cancellationToken)
         {
@@ -41,9 +43,12 @@ namespace Identity.Application.User.Commands
                 ConfirmUserEvent confirmUserEvent = new ConfirmUserEvent(request.UserId, request.Email, code);
 
                 await _mediator.Publish(confirmUserEvent);
+
+                await _loggerService.LogInfo("Code generated", "GenerateCodeCommandHandler.Handle");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "GenerateCodeCommandHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

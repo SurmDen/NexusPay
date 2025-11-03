@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Repositories;
+﻿using Identity.Application.Interfaces;
+using Identity.Domain.Repositories;
 using Identity.Domain.ValueObjects;
 using MediatR;
 using System;
@@ -11,14 +12,16 @@ namespace Identity.Application.User.Commands
 {
     public class UpdateUsersPasswordCommandHandler : IRequestHandler<UpdateUsersPasswordCommand>
     {
-        public UpdateUsersPasswordCommandHandler(IUserRepository userRepository, IMediator mediator)
+        public UpdateUsersPasswordCommandHandler(IUserRepository userRepository, IMediator mediator, ILoggerService loggerService)
         {
             _mediator = mediator;
+            _loggerService = loggerService;
             _userRepository = userRepository;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ILoggerService _loggerService;
 
         public async Task Handle(UpdateUsersPasswordCommand request, CancellationToken cancellationToken)
         {
@@ -34,9 +37,12 @@ namespace Identity.Application.User.Commands
                 }
 
                 user.ClearEventList();
+
+                await _loggerService.LogInfo($"User with id: {request.UserId} password updated", "UpdateUsersPasswordCommandHandler.Handle");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "UpdateUsersPasswordCommandHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

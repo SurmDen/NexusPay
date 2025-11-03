@@ -1,4 +1,5 @@
-﻿using Identity.Application.User.DTOs;
+﻿using Identity.Application.Interfaces;
+using Identity.Application.User.DTOs;
 using Identity.Domain.Entities;
 using Identity.Domain.Repositories;
 using MediatR;
@@ -12,14 +13,16 @@ namespace Identity.Application.User.Queries
 {
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDto>>
     {
-        public GetUsersQueryHandler(IUserRepository userRepository, IMediator mediator)
+        public GetUsersQueryHandler(IUserRepository userRepository, IMediator mediator, ILoggerService loggerService)
         {
+            _loggerService = loggerService;
             _mediator = mediator;
             _userRepository = userRepository;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ILoggerService _loggerService;
 
         public async Task<List<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
@@ -43,8 +46,9 @@ namespace Identity.Application.User.Queries
 
                 return userDtos.ToList();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "GetUsersQueryHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

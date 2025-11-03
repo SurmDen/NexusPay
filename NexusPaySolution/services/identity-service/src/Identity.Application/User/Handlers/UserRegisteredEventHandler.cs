@@ -20,7 +20,15 @@ namespace Identity.Application.User.Handlers
 
         public async Task Handle(UserRegisteredEvent notification, CancellationToken cancellationToken)
         {
-            await _producer.SendObject("user.registered", notification);
+            try
+            {
+                await _producer.SendObject("user.registered", notification);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

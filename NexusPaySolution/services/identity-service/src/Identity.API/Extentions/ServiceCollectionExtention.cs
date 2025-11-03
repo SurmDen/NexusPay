@@ -15,7 +15,7 @@ namespace Identity.API.Extentions
     {
         public static void AddApplicationDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("Postgres") ?? throw new InvalidOperationException("Invalid connection string");
+            string? connectionString = configuration.GetConnectionString("Postgres") ?? throw new InvalidOperationException("Invalid connection string");
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {

@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Repositories;
+﻿using Identity.Application.Interfaces;
+using Identity.Domain.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,16 @@ namespace Identity.Application.User.Commands
 {
     public class ActivateUserCommandHandler : IRequestHandler<ActivateUserCommand>
     {
-        public ActivateUserCommandHandler(IUserRepository userRepository, IMediator mediator)
+        public ActivateUserCommandHandler(IUserRepository userRepository, IMediator mediator, ILoggerService loggerService)
         {
             _mediator = mediator;
             _userRepository = userRepository;
+            _loggerService = loggerService;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ILoggerService _loggerService;
 
         public async Task Handle(ActivateUserCommand request, CancellationToken cancellationToken)
         {
@@ -31,9 +34,12 @@ namespace Identity.Application.User.Commands
                 }
 
                 user.ClearEventList();
+
+                await _loggerService.LogInfo($"User with id {request.UserId} activated", "ActivateUserCommandHandler.Handle");
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "ActivateUserCommandHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

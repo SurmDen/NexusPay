@@ -9,18 +9,20 @@ namespace Identity.Application.User.Commands
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
-        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator, ICodeGenerator codeGenerator, IDistributedCache cache)
+        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator, ICodeGenerator codeGenerator, IDistributedCache cache, ILoggerService loggerService)
         {
             _mediator = mediator;
             _codeGenerator = codeGenerator;
             _userRepository = userRepository;
             _cache = cache;
+            _loggerService = loggerService;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
         private readonly ICodeGenerator _codeGenerator;
         IDistributedCache _cache;
+        private readonly ILoggerService _loggerService;
 
         public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
@@ -65,10 +67,14 @@ namespace Identity.Application.User.Commands
                     RoleName = registeredUser.RoleName.Value
                 };
 
+                await _loggerService.LogInfo($"User {request.Email} registered", "RegisterUserCommandHandler.Handle");
+
                 return userDto;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "RegisterUserCommandHandler.Handle", e.GetType().FullName);
+
                 throw;
             }
         }

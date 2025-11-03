@@ -14,16 +14,18 @@ namespace Identity.Application.User.Commands
 {
     public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, bool>
     {
-        public ConfirmEmailCommandHandler(IUserRepository userRepository, IMediator mediator, IDistributedCache cache)
+        public ConfirmEmailCommandHandler(IUserRepository userRepository, IMediator mediator, IDistributedCache cache, ILoggerService loggerService)
         {
             _mediator = mediator;
             _userRepository = userRepository;
             _cache = cache;
+            _loggerService = loggerService;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
         IDistributedCache _cache;
+        private readonly ILoggerService _loggerService;
 
         public async Task<bool> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
         {
@@ -33,6 +35,8 @@ namespace Identity.Application.User.Commands
 
                 if (string.IsNullOrEmpty(codeString))
                 {
+                    await _loggerService.LogWarning($"code, sended to email: {request.Email} not found", "ConfirmEmailCommandHandler.Handle");
+
                     throw new NotFoundException($"code, sended to email: {request.Email} not found");
                 }
 
@@ -40,6 +44,8 @@ namespace Identity.Application.User.Commands
 
                 if (!isParsed)
                 {
+                    await _loggerService.LogWarning("invalid code format", "ConfirmEmailCommandHandler.Handle");
+
                     throw new ArgumentException("invalid code format");
                 }
 
@@ -56,13 +62,16 @@ namespace Identity.Application.User.Commands
 
                     _cache.Remove($"email_comfirmation_{request.Email}");
 
+                    await _loggerService.LogInfo($"Email confirmed", "ConfirmEmailCommandHandler.Handle");
+
                     return true;
                 }
 
                 return false;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "ConfirmEmailCommandHandler.Handle", e.GetType().FullName);
 
                 throw;
             }

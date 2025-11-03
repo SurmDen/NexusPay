@@ -1,4 +1,5 @@
-﻿using Identity.Application.User.DTOs;
+﻿using Identity.Application.Interfaces;
+using Identity.Application.User.DTOs;
 using Identity.Domain.Repositories;
 using Identity.Domain.ValueObjects;
 using MediatR;
@@ -12,14 +13,16 @@ namespace Identity.Application.User.Queries
 {
     public class GetUserByEmailAndPasswordQueryHandler : IRequestHandler<GetUserByEmailAndPasswordQuery, UserDto>
     {
-        public GetUserByEmailAndPasswordQueryHandler(IUserRepository userRepository, IMediator mediator)
+        public GetUserByEmailAndPasswordQueryHandler(IUserRepository userRepository, IMediator mediator, ILoggerService loggerService)
         {
+            _loggerService = loggerService;
             _mediator = mediator;
             _userRepository = userRepository;
         }
 
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ILoggerService _loggerService;
 
         public async Task<UserDto> Handle(GetUserByEmailAndPasswordQuery request, CancellationToken cancellationToken)
         {
@@ -43,8 +46,9 @@ namespace Identity.Application.User.Queries
 
                 return userDto;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                await _loggerService.LogError(e.Message, "GetUserByEmailAndPasswordQueryHandler.Handle", e.GetType().FullName);
 
                 throw;
             }
