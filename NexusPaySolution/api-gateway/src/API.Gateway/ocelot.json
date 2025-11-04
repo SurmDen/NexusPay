@@ -1,7 +1,7 @@
 {
   "Routes": [
     // ==============================================
-    // 📚 SWAGGER ДОКУМЕНТАЦИЯ (ВАЖНО: ДОЛЖНЫ БЫТЬ ПЕРВЫМИ!)
+    // 📚 SWAGGER ДОКУМЕНТАЦИЯ
     // ==============================================
 
     // Identity Service Swagger
@@ -10,8 +10,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/swagger/v1/swagger.json",
@@ -24,8 +24,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "logging-service",
-          "Port": 80
+          "Host": "nexuspay-logging",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/logging/swagger/v1/swagger.json",
@@ -38,8 +38,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "notification-service",
-          "Port": 80
+          "Host": "nexuspay-notification",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/notifications/swagger/v1/swagger.json",
@@ -56,8 +56,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/auth",
@@ -70,8 +70,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/register",
@@ -84,17 +84,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/email/confirm",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "User,Admin"
       }
     },
 
@@ -104,17 +101,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/code/refresh",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "User,Admin"
       }
     },
 
@@ -124,17 +118,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/update/{everything}",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "User,Admin"
       }
     },
 
@@ -144,37 +135,31 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/activate/{id}",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ - User, Admin
+    // 🗑️ УДАЛЕНИЕ - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/delete/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/delete/{id}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "User,Admin"
       }
     },
 
@@ -184,42 +169,36 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/users",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "User,Admin"
       }
     },
 
-    // 👤 ПОЛУЧЕНИЕ ПО ID - только Admin
+    // 👤 ПОЛУЧЕНИЕ ПО ID - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
-          "Port": 80
+          "Host": "nexuspay-identity",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/identity/users/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     },
 
     // ==============================================
-    // 📊 LOGGING SERVICE - только Admin
+    // 📊 LOGGING SERVICE - требует токен
     // ==============================================
 
     // 📋 ПОЛУЧЕНИЕ ЛОГОВ
@@ -228,17 +207,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "logging-service",
-          "Port": 80
+          "Host": "nexuspay-logging",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/logging/logs",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     },
 
@@ -248,42 +224,19 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "logging-service",
-          "Port": 80
+          "Host": "nexuspay-logging",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/logging/cleanup",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
-      }
-    },
-
-    // 🗑️ УДАЛЕНИЕ ЛОГОВ ПО ДНЯМ
-    {
-      "DownstreamPathTemplate": "/api/v1/logs/cleanup/days",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "logging-service",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/logging/cleanup/days",
-      "UpstreamHttpMethod": [ "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     },
 
     // ==============================================
-    // 📧 NOTIFICATION SERVICE - только Admin
+    // 📧 NOTIFICATION SERVICE - требует токен
     // ==============================================
 
     // 📨 ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ
@@ -292,17 +245,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "notification-service",
-          "Port": 80
+          "Host": "nexuspay-notification",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/notifications",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     },
 
@@ -312,37 +262,14 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "notification-service",
-          "Port": 80
+          "Host": "nexuspay-notification",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/notifications/cleanup",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
-      }
-    },
-
-    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ ПО ДНЯМ
-    {
-      "DownstreamPathTemplate": "/api/v1/notification/cleanup/days",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "notification-service",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/notifications/cleanup/days",
-      "UpstreamHttpMethod": [ "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin"
       }
     }
   ],

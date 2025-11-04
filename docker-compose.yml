@@ -45,7 +45,7 @@ services:
       - nexuspay-network
 
   # ========================
-  # 🐰 RABBITMQ
+  # 🐰 RABBITMQ (с health check)
   # ========================
   rabbitmq:
     image: rabbitmq:3-management
@@ -58,6 +58,12 @@ services:
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - nexuspay-network
 
@@ -84,12 +90,16 @@ services:
     container_name: nexuspay-identity
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
     ports:
-      - "5001:5001"
+      - "5001:8080"
     depends_on:
-      - postgres-identity
-      - redis
-      - rabbitmq
+      postgres-identity:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
       - nexuspay-network
 
@@ -100,11 +110,14 @@ services:
     container_name: nexuspay-logging
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
     ports:
-      - "5002:5002"
+      - "5002:8080"
     depends_on:
-      - postgres-logging
-      - rabbitmq
+      postgres-logging:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - nexuspay-network
 
@@ -115,11 +128,14 @@ services:
     container_name: nexuspay-notification
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
     ports:
-      - "5003:5003"
+      - "5003:8080"
     depends_on:
-      - postgres-notification
-      - rabbitmq
+      postgres-notification:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - nexuspay-network
 
@@ -130,8 +146,9 @@ services:
     container_name: nexuspay-gateway
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
     ports:
-      - "5000:5000"
+      - "5000:8080"
     depends_on:
       - identity-service
       - logging-service
