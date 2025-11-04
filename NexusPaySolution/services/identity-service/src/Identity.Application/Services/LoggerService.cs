@@ -27,7 +27,7 @@ namespace Identity.Application.Services
                 LogLevel = "Information"
             };
 
-            await _producer.SendObject("logging", logMessage);
+            await _producer.SendObject("logging.identity", logMessage);
         }
 
         public async Task LogWarning(string message, string action)

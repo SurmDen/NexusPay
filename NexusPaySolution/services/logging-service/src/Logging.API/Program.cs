@@ -1,4 +1,5 @@
 using Logging.API.Extentions;
+using Logging.Application.Interfaces;
 using Logging.Application.Log.Commands;
 using Logging.Domain.Events;
 using Logging.Infrastructure.MessageBus.Options;
@@ -66,5 +67,10 @@ app.UseCors(options =>
 });
 
 app.MapControllers();
+
+var consumer = app.Services.GetRequiredService<IConsumer>();
+
+await consumer.Subscribe("logging.identity", "identity-logs-queue");
+await consumer.Subscribe("logging.notification", "notification-logs-queue");
 
 app.Run();
