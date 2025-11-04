@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Копируем ВСЕ файлы Identity service
+COPY services/identity-service/src/ ./
+
+# Восстанавливаем и публикуем
+RUN dotnet restore Identity.API/Identity.API.csproj
+RUN dotnet publish Identity.API/Identity.API.csproj -c Release -o /app
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Identity.API.dll"]

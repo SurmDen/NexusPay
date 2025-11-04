@@ -1,0 +1,151 @@
+services:
+  # ========================
+  # 🗄️ БАЗЫ ДАННЫХ
+  # ========================
+  postgres-identity:
+    image: postgres:15
+    container_name: nexuspay-identity-db
+    environment:
+      POSTGRES_DB: NexusPay_Identity_DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Surman123$
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_identity_data:/var/lib/postgresql/data
+    networks:
+      - nexuspay-network
+
+  postgres-logging:
+    image: postgres:15
+    container_name: nexuspay-logging-db
+    environment:
+      POSTGRES_DB: NexusPay_Logging_DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Surman123$
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_logging_data:/var/lib/postgresql/data
+    networks:
+      - nexuspay-network
+
+  postgres-notification:
+    image: postgres:15
+    container_name: nexuspay-notification-db
+    environment:
+      POSTGRES_DB: NexusPay_Notification_DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Surman123$
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_notification_data:/var/lib/postgresql/data
+    networks:
+      - nexuspay-network
+
+  # ========================
+  # 🐰 RABBITMQ
+  # ========================
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: nexuspay-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - nexuspay-network
+
+  # ========================
+  # 🔴 REDIS
+  # ========================
+  redis:
+    image: redis:7-alpine
+    container_name: nexuspay-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - nexuspay-network
+
+  # ========================
+  # 🔐 МИКРОСЕРВИСЫ
+  # ========================
+  identity-service:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/identity/Dockerfile
+    container_name: nexuspay-identity
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres-identity
+      - redis
+      - rabbitmq
+    networks:
+      - nexuspay-network
+
+  logging-service:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/logging/Dockerfile
+    container_name: nexuspay-logging
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5002:5002"
+    depends_on:
+      - postgres-logging
+      - rabbitmq
+    networks:
+      - nexuspay-network
+
+  notification-service:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/notification/Dockerfile
+    container_name: nexuspay-notification
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5003:5003"
+    depends_on:
+      - postgres-notification
+      - rabbitmq
+    networks:
+      - nexuspay-network
+
+  api-gateway:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/gateway/Dockerfile
+    container_name: nexuspay-gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - identity-service
+      - logging-service
+      - notification-service
+    networks:
+      - nexuspay-network
+
+volumes:
+  postgres_identity_data:
+  postgres_logging_data:
+  postgres_notification_data:
+  rabbitmq_data:
+  redis_data:
+
+networks:
+  nexuspay-network:
+    driver: bridge

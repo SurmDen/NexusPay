@@ -1,58 +1,91 @@
 {
   "Routes": [
     // ==============================================
-    // 🔐 IDENTITY SERVICE (Port 5001)
+    // 📚 SWAGGER ДОКУМЕНТАЦИЯ (ВАЖНО: ДОЛЖНЫ БЫТЬ ПЕРВЫМИ!)
     // ==============================================
 
-    // 🔓 АУТЕНТИФИКАЦИЯ - без токена, с rate limiting
+    // Identity Service Swagger
     {
-      "DownstreamPathTemplate": "/api/v1/user/auth",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/swagger/v1/swagger.json",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    // Logging Service Swagger
+    {
+      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "logging-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/logging/swagger/v1/swagger.json",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    // Notification Service Swagger
+    {
+      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "notification-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/notifications/swagger/v1/swagger.json",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    // ==============================================
+    // 🔐 IDENTITY SERVICE
+    // ==============================================
+
+    // 🔓 АУТЕНТИФИКАЦИЯ - без токена
+    {
+      "DownstreamPathTemplate": "/api/v1/user/auth",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/auth",
-      "UpstreamHttpMethod": [ "POST" ],
-      "RateLimitOptions": {
-        "ClientWhitelist": [],
-        "EnableRateLimiting": true,
-        "Period": "1m",
-        "PeriodTimespan": 60,
-        "Limit": 10
-      }
+      "UpstreamHttpMethod": [ "POST" ]
     },
 
-    // 👤 РЕГИСТРАЦИЯ - без токена, с rate limiting  
+    // 👤 РЕГИСТРАЦИЯ - без токена
     {
       "DownstreamPathTemplate": "/api/v1/user/create",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/register",
-      "UpstreamHttpMethod": [ "POST" ],
-      "RateLimitOptions": {
-        "EnableRateLimiting": true,
-        "Period": "1m",
-        "PeriodTimespan": 60,
-        "Limit": 5 // 5 регистраций в минуту
-      }
+      "UpstreamHttpMethod": [ "POST" ]
     },
 
-    // ✅ ПОДТВЕРЖДЕНИЕ EMAIL - с кэшированием
+    // ✅ ПОДТВЕРЖДЕНИЕ EMAIL - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/email/confirm",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/email/confirm",
@@ -62,21 +95,17 @@
       },
       "RouteClaimsRequirement": {
         "role": "User,Admin"
-      },
-      "FileCacheOptions": {
-        "TtlSeconds": 30,
-        "Region": "email-confirm"
       }
     },
 
-    // 🔄 ОБНОВЛЕНИЕ КОДА - с rate limiting
+    // 🔄 ОБНОВЛЕНИЕ КОДА - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/code/refresh",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/code/refresh",
@@ -86,23 +115,17 @@
       },
       "RouteClaimsRequirement": {
         "role": "User,Admin"
-      },
-      "RateLimitOptions": {
-        "EnableRateLimiting": true,
-        "Period": "1m",
-        "PeriodTimespan": 60,
-        "Limit": 3
       }
     },
 
-    // ✏️ ОБНОВЛЕНИЕ EMAIL/ИМЕНИ/ПАРОЛЯ
+    // ✏️ ОБНОВЛЕНИЕ ДАННЫХ - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/update/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/update/{everything}",
@@ -118,11 +141,11 @@
     // 👑 АКТИВАЦИЯ/ДЕАКТИВАЦИЯ - только Admin
     {
       "DownstreamPathTemplate": "/api/v1/user/activate/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/activate/{id}",
@@ -138,11 +161,11 @@
     // 🗑️ УДАЛЕНИЕ - User, Admin
     {
       "DownstreamPathTemplate": "/api/v1/user/delete/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/delete/{id}",
@@ -155,14 +178,14 @@
       }
     },
 
-    // 👥 ПОЛУЧЕНИЕ ВСЕХ - с кэшированием
+    // 👥 ПОЛУЧЕНИЕ ВСЕХ - требует токен
     {
       "DownstreamPathTemplate": "/api/v1/user/get/all",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/users",
@@ -172,21 +195,17 @@
       },
       "RouteClaimsRequirement": {
         "role": "User,Admin"
-      },
-      "FileCacheOptions": {
-        "TtlSeconds": 30, // Кэш на 30 секунд
-        "Region": "users-list"
       }
     },
 
     // 👤 ПОЛУЧЕНИЕ ПО ID - только Admin
     {
       "DownstreamPathTemplate": "/api/v1/user/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5001
+          "Host": "identity-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/identity/users/{id}",
@@ -200,17 +219,17 @@
     },
 
     // ==============================================
-    // 📊 LOGGING SERVICE (Port 5002) - только Admin
+    // 📊 LOGGING SERVICE - только Admin
     // ==============================================
 
-    // 📋 ПОЛУЧЕНИЕ ЛОГОВ - с кэшированием
+    // 📋 ПОЛУЧЕНИЕ ЛОГОВ
     {
       "DownstreamPathTemplate": "/api/v1/logs",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "logging-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/logging/logs",
@@ -220,27 +239,17 @@
       },
       "RouteClaimsRequirement": {
         "role": "Admin"
-      },
-      "FileCacheOptions": {
-        "TtlSeconds": 10,
-        "Region": "logs"
-      },
-      "RateLimitOptions": {
-        "EnableRateLimiting": true,
-        "Period": "1m",
-        "PeriodTimespan": 60,
-        "Limit": 30
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ ЛОГОВ - только Admin
+    // 🗑️ УДАЛЕНИЕ ЛОГОВ
     {
       "DownstreamPathTemplate": "/api/v1/logs/cleanup",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "logging-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/logging/cleanup",
@@ -253,14 +262,14 @@
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ ЛОГОВ ПО ДНЯМ - только Admin
+    // 🗑️ УДАЛЕНИЕ ЛОГОВ ПО ДНЯМ
     {
       "DownstreamPathTemplate": "/api/v1/logs/cleanup/days",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5002
+          "Host": "logging-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/logging/cleanup/days",
@@ -274,17 +283,17 @@
     },
 
     // ==============================================
-    // 📧 NOTIFICATION SERVICE (Port 5003) - только Admin
+    // 📧 NOTIFICATION SERVICE - только Admin
     // ==============================================
 
-    // 📨 ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ - с кэшированием
+    // 📨 ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ
     {
       "DownstreamPathTemplate": "/api/v1/notification",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "notification-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/notifications",
@@ -294,21 +303,17 @@
       },
       "RouteClaimsRequirement": {
         "role": "Admin"
-      },
-      "FileCacheOptions": {
-        "TtlSeconds": 15,
-        "Region": "notifications"
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ - только Admin
+    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ
     {
       "DownstreamPathTemplate": "/api/v1/notification/cleanup",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "notification-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/notifications/cleanup",
@@ -321,14 +326,14 @@
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ ПО ДНЯМ - только Admin
+    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ ПО ДНЯМ
     {
       "DownstreamPathTemplate": "/api/v1/notification/cleanup/days",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5003
+          "Host": "notification-service",
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/notifications/cleanup/days",
@@ -339,56 +344,10 @@
       "RouteClaimsRequirement": {
         "role": "Admin"
       }
-    },
-
-    // ==============================================
-    // 📚 SWAGGER ДОКУМЕНТАЦИЯ
-    // ==============================================
-
-    // Identity Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5001
-        }
-      ],
-      "UpstreamPathTemplate": "/identity/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    // Logging Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5002
-        }
-      ],
-      "UpstreamPathTemplate": "/logging/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    // Notification Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5003
-        }
-      ],
-      "UpstreamPathTemplate": "/notifications/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
     }
   ],
 
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5000"
+    "BaseUrl": "http://localhost:5000"
   }
 }

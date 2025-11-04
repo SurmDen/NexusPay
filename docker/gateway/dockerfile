@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Копируем ВСЕ файлы Gateway
+COPY api-gateway/src/ ./
+
+# Убедись что ocelot.json в правильном месте
+RUN ls -la API.Gateway/
+
+# Восстанавливаем и публикуем
+RUN dotnet restore API.Gateway/API.Gateway.csproj
+RUN dotnet publish API.Gateway/API.Gateway.csproj -c Release -o /app
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+# Копируем ocelot.json в выходную папку
+COPY --from=build /src/API.Gateway/ocelot.json .
+ENTRYPOINT ["dotnet", "API.Gateway.dll"]

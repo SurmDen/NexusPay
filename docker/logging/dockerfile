@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Копируем ВСЕ файлы Logging service
+COPY services/logging-service/src/ ./
+
+# Восстанавливаем и публикуем
+RUN dotnet restore Logging.API/Logging.API.csproj
+RUN dotnet publish Logging.API/Logging.API.csproj -c Release -o /app
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Logging.API.dll"]

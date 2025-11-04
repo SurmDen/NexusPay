@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Копируем ВСЕ файлы Notification service
+COPY services/notification-service/src/ ./
+
+# Восстанавливаем и публикуем
+RUN dotnet restore Notification.API/Notification.API.csproj
+RUN dotnet publish Notification.API/Notification.API.csproj -c Release -o /app
+
+# Финальный образ
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Notification.API.dll"]
