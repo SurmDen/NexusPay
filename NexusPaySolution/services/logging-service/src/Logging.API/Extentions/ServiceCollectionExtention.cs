@@ -24,7 +24,7 @@ namespace Logging.API.Extentions
         {
             services.AddTransient<ILoggingRepository, LoggingRepository>();
             services.AddSingleton<IConsumer, RabbitConsumer>();
-            services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddScoped<ILoggerService, LoggerService>();
         }
     }
 }

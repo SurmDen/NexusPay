@@ -69,10 +69,26 @@ app.UseCors(options =>
 
 app.MapControllers();
 
-var consumer = app.Services.GetRequiredService<IConsumer>();
+int retry = 0;
 
-await Task.Delay(10000);
+while (retry < 5)
+{
+    try
+    {
+        var consumer = app.Services.GetRequiredService<IConsumer>();
 
-await consumer.Subscribe<EmailNotificationEvent>("notification.email.confirm", "email-confirmation-queue");
+        await consumer.Subscribe<EmailNotificationEvent>("notification.email.confirm", "email-confirmation-queue");
+
+        break;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+
+        retry++;
+
+        await Task.Delay(5000);
+    }
+}
 
 app.Run();

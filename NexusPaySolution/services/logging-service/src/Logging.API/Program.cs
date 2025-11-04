@@ -68,11 +68,27 @@ app.UseCors(options =>
 
 app.MapControllers();
 
-var consumer = app.Services.GetRequiredService<IConsumer>();
+int retry = 0;
 
-await Task.Delay(10000);
+while(retry < 5)
+{
+    try
+    {
+        var consumer = app.Services.GetRequiredService<IConsumer>();
 
-await consumer.Subscribe("logging.identity", "identity-logs-queue");
-await consumer.Subscribe("logging.notification", "notification-logs-queue");
+        await consumer.Subscribe("logging.identity", "identity-logs-queue");
+        await consumer.Subscribe("logging.notification", "notification-logs-queue");
+
+        break;
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        
+        retry++;
+
+        await Task.Delay(5000);
+    }
+}
 
 app.Run();
