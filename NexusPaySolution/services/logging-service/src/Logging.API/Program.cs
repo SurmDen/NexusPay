@@ -10,15 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Добавление Swagger с JWT поддержкой
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Logging Service - NexusPay",
         Version = "v1",
-        Description = "Микросервис логирования и аудита NexusPay",
+        Description = "Logging and auditing microservice NexusPay",
         Contact = new OpenApiContact
         {
             Name = "NexusPay Development Team",

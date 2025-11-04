@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Notification Service - NexusPay",
         Version = "v1",
-        Description = "ћикросервис уведомлений и рассылок NexusPay",
+        Description = "Microservice for notifications and newsletters NexusPay",
         Contact = new OpenApiContact
         {
             Name = "NexusPay Development Team",

@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Identity Service - NexusPay",
         Version = "v1",
-        Description = "Микросервис аутентификации и управления пользователями NexusPay",
+        Description = "Microservice for authentication and user management - NexusPay",
         Contact = new OpenApiContact
         {
             Name = "NexusPay Development Team",
