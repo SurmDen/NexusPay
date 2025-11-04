@@ -8,7 +8,7 @@ namespace Logging.Infrastructure.MessageBus.Options
 {
     public class RabbitMQOptions
     {
-        public string Host { get; set; } = "rabbitmq";
+        public string Host { get; set; } = "nexuspay-rabbitmq";
 
         public int Port { get; set; } = 5672;
 
