@@ -47,7 +47,7 @@ namespace Identity.Application.User.Commands
 
                 await _cache.SetStringAsync($"email_comfirmation_{user.UserEmail.Value}", $"{code}", cacheOptions);
 
-                registeredUser.AddConfirmationEvent(code);
+                registeredUser.AddConfirmationEvent("Nexus Pay", $"<h1>Your account created</h1><p>Confirmation code: <b>${code}</b></p>");
 
                 foreach (var userEvents in registeredUser.DomainEvents)
                 {

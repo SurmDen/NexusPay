@@ -59,9 +59,9 @@ namespace Identity.Domain.Entities
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void AddConfirmationEvent(int code)
+        public void AddConfirmationEvent(string subject, string body)
         {
-            _domainEvents.Add(new ConfirmUserEvent(Id, UserName, code));
+            _domainEvents.Add(new NotificationEvent(subject, UserEmail.Value, body));
         }
 
         public void UpdateUserName(string name)

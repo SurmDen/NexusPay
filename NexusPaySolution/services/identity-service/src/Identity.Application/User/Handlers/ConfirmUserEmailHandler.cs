@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Application.User.Handlers
 {
-    public class ConfirmUserEventHandler : INotificationHandler<ConfirmUserEvent>
+    public class ConfirmUserEventHandler : INotificationHandler<NotificationEvent>
     {
         public ConfirmUserEventHandler(IProducer producer)
         {
@@ -18,11 +18,11 @@ namespace Identity.Application.User.Handlers
 
         private readonly IProducer _producer;
 
-        public async Task Handle(ConfirmUserEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(NotificationEvent notification, CancellationToken cancellationToken)
         {
             try
             {
-                await _producer.SendObject("user.comfirm", notification);
+                await _producer.SendObject("notification.identity", notification);
             }
             catch (Exception)
             {

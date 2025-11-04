@@ -1,16 +1,11 @@
-﻿using Identity.Application.Interfaces;
-using Identity.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Notification.Application.Interfaces;
+using Notification.Domain.Models;
 
-namespace Identity.Application.Services
+namespace Notification.Application.Services
 {
-    public class LoggerService : ILoggerService
+    public class LoggerService
     {
-        public LoggerService(IProducer producer )
+        public LoggerService(IProducer producer)
         {
             _producer = producer;
         }
@@ -21,40 +16,40 @@ namespace Identity.Application.Services
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "identity-service",
+                ServiceName = "notification-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Information"
             };
 
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging.notification", logMessage);
         }
 
         public async Task LogWarning(string message, string action)
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "identity-service",
+                ServiceName = "notification-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Warning"
             };
 
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging.notification", logMessage);
         }
 
         public async Task LogError(string message, string action, string? exception)
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "identity-service",
+                ServiceName = "notification-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Error",
                 Exception = exception
             };
 
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging.notification", logMessage);
         }
     }
 }

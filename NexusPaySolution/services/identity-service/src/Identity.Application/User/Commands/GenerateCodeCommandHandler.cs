@@ -40,7 +40,7 @@ namespace Identity.Application.User.Commands
 
                 await _cache.SetStringAsync($"email_comfirmation_{request.Email}", $"{code}", cacheOptions);
 
-                ConfirmUserEvent confirmUserEvent = new ConfirmUserEvent(request.UserId, request.Email, code);
+                NotificationEvent confirmUserEvent = new NotificationEvent("Nexus Pay", request.Email, $"<h1>Добро пожаловать!</h1><p>Ваш код: <b>{code}</b></p>");
 
                 await _mediator.Publish(confirmUserEvent);
 

@@ -26,7 +26,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     config.RegisterServicesFromAssembly(typeof(RegisterUserCommand).Assembly);
-    config.RegisterServicesFromAssembly(typeof(ConfirmUserEvent).Assembly);
+    config.RegisterServicesFromAssembly(typeof(NotificationEvent).Assembly);
 });
 
 builder.Services.AddStackExchangeRedisCache(options =>
