@@ -6,7 +6,7 @@ using Notification.Application.Interfaces;
 
 namespace Notification.API.Controllers
 {
-
+    //port 5003
     [ApiController]
     [Route("api/v1/notification")]
     public class NotificationController : ControllerBase
@@ -20,6 +20,7 @@ namespace Notification.API.Controllers
         private readonly ILoggerService _loggerService;
         private readonly IMediator _mediator;
 
+        //[Authorize(Admin)]
         [HttpGet]
         public async Task<IActionResult> GetNotificationsAsync([FromQuery] DateTime? from = null)
         {
@@ -42,6 +43,7 @@ namespace Notification.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpDelete("cleanup")]
         public async Task<IActionResult> RemoveNotificationsAsync([FromQuery] DateTime before)
         {
@@ -64,6 +66,7 @@ namespace Notification.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpDelete("cleanup/days")]
         public async Task<IActionResult> RemoveNotificationsOlderThanDaysAsync([FromQuery] int days)
         {

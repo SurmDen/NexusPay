@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
 {
+    //port 5001
     [ApiController]
     [Route("api/v1/user")]
     public class UserController : ControllerBase
@@ -23,6 +24,7 @@ namespace Identity.API.Controllers
         private readonly ITokenService _tokenService;
         private readonly ILoggerService _logger;
 
+        
         [HttpPost("create")]
         public async Task<IActionResult> CreateUserAsync([FromBody] RegisterUserCommand registerUser)
         {
@@ -72,6 +74,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpPost("email/confirm")]
         public async Task<IActionResult> ConfirmCodeAsync([FromBody] ConfirmEmailCommand emailCommand)
         {
@@ -117,6 +120,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpPost("code/refresh")]
         public async Task<IActionResult> RefreshConfirmationCodeAsync([FromBody] GenerateCodeCommand generateCodeCommand)
         {
@@ -188,6 +192,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpPost("update/email")]
         public async Task<IActionResult> UpdateUsersEmailAsync([FromBody] UpdateUsersEmailCommand updateUsersEmail)
         {
@@ -225,6 +230,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpPost("update/name")]
         public async Task<IActionResult> UpdateUsersNameAsync([FromBody] UpdateUsersNameCommand updateUsersName)
         {
@@ -262,6 +268,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpPost("update/password")]
         public async Task<IActionResult> UpdateUsersPasswordAsync([FromBody] UpdateUsersPasswordCommand updateUsersPassword)
         {
@@ -299,6 +306,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpPost("activate/{id:guid}")]
         public async Task<IActionResult> UpdateUsersActiveStateAsync(Guid id)
         {
@@ -333,6 +341,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpDelete("delete/{id:guid}")]
         public async Task<IActionResult> DeleteUserAsync(Guid id)
         {
@@ -367,6 +376,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(User,Admin)]
         [HttpGet("get/all")]
         public async Task<IActionResult> GetUsersAsync()
         {
@@ -388,6 +398,7 @@ namespace Identity.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {

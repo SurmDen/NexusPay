@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Logging.API.Controllers
 {
+    //port 5002
     [ApiController]
     [Route("api/v1/logs")]
     public class LogsController : ControllerBase
@@ -19,6 +20,7 @@ namespace Logging.API.Controllers
         private readonly ILoggerService _loggerService;
         private readonly IMediator _mediator;
 
+        //[Authorize(Admin)]
         [HttpGet]
         public async Task<IActionResult> GetLogsAsync([FromQuery] string? serviceName = null, [FromQuery] string? logLevel = null, [FromQuery] DateTime? from = null)
         {
@@ -49,6 +51,7 @@ namespace Logging.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpDelete("cleanup")]
         public async Task<IActionResult> DeleteOldLogsAsync([FromQuery] DateTime before)
         {
@@ -74,6 +77,7 @@ namespace Logging.API.Controllers
             }
         }
 
+        //[Authorize(Admin)]
         [HttpDelete("cleanup/days")]
         public async Task<IActionResult> DeleteLogsOlderThanDaysAsync([FromQuery] int days)
         {
