@@ -3,6 +3,7 @@ using Logging.Application.Services;
 using Logging.Domain.Repositories;
 using Logging.Infrastructure.Data;
 using Logging.Infrastructure.MessageBus.RabbitMQ;
+using Logging.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Logging.API.Extentions
@@ -21,7 +22,7 @@ namespace Logging.API.Extentions
 
         public static void AddCustomServices(this IServiceCollection services)
         {
-            services.AddTransient<ILoggingRepository, ILoggingRepository>();
+            services.AddTransient<ILoggingRepository, LoggingRepository>();
             services.AddSingleton<IConsumer, RabbitConsumer>();
             services.AddSingleton<ILoggerService, LoggerService>();
         }

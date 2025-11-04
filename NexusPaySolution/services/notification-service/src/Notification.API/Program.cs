@@ -71,6 +71,8 @@ app.MapControllers();
 
 var consumer = app.Services.GetRequiredService<IConsumer>();
 
+await Task.Delay(10000);
+
 await consumer.Subscribe<EmailNotificationEvent>("notification.email.confirm", "email-confirmation-queue");
 
 app.Run();

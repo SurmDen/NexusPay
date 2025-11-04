@@ -70,6 +70,8 @@ app.MapControllers();
 
 var consumer = app.Services.GetRequiredService<IConsumer>();
 
+await Task.Delay(10000);
+
 await consumer.Subscribe("logging.identity", "identity-logs-queue");
 await consumer.Subscribe("logging.notification", "notification-logs-queue");
 
