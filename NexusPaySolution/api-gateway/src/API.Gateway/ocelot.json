@@ -1,56 +1,10 @@
 {
   "Routes": [
     // ==============================================
-    // 📚 SWAGGER ДОКУМЕНТАЦИЯ
+    // 🔐 IDENTITY SERVICE (Port 5001)
     // ==============================================
 
-    // Identity Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "nexuspay-identity",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/identity/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    // Logging Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "nexuspay-logging",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/logging/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    // Notification Service Swagger
-    {
-      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "nexuspay-notification",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/notifications/swagger/v1/swagger.json",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    // ==============================================
-    // 🔐 IDENTITY SERVICE
-    // ==============================================
-
-    // 🔓 АУТЕНТИФИКАЦИЯ - без токена
+    // 🔓 АУТЕНТИФИКАЦИЯ - без токена, с rate limiting
     {
       "DownstreamPathTemplate": "/api/v1/user/auth",
       "DownstreamScheme": "http",
@@ -61,10 +15,17 @@
         }
       ],
       "UpstreamPathTemplate": "/identity/auth",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [ "POST" ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "PeriodTimespan": 60,
+        "Limit": 10
+      }
     },
 
-    // 👤 РЕГИСТРАЦИЯ - без токена
+    // 👤 РЕГИСТРАЦИЯ - без токена, с rate limiting  
     {
       "DownstreamPathTemplate": "/api/v1/user/create",
       "DownstreamScheme": "http",
@@ -75,10 +36,16 @@
         }
       ],
       "UpstreamPathTemplate": "/identity/register",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [ "POST" ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "PeriodTimespan": 60,
+        "Limit": 5
+      }
     },
 
-    // ✅ ПОДТВЕРЖДЕНИЕ EMAIL - требует токен
+    // ✅ ПОДТВЕРЖДЕНИЕ EMAIL - с кэшированием
     {
       "DownstreamPathTemplate": "/api/v1/user/email/confirm",
       "DownstreamScheme": "http",
@@ -92,10 +59,17 @@
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "User,Admin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 30,
+        "Region": "email-confirm"
       }
     },
 
-    // 🔄 ОБНОВЛЕНИЕ КОДА - требует токен
+    // 🔄 ОБНОВЛЕНИЕ КОДА - с rate limiting
     {
       "DownstreamPathTemplate": "/api/v1/user/code/refresh",
       "DownstreamScheme": "http",
@@ -109,10 +83,19 @@
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "User,Admin"
+      },
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "PeriodTimespan": 60,
+        "Limit": 3
       }
     },
 
-    // ✏️ ОБНОВЛЕНИЕ ДАННЫХ - требует токен
+    // ✏️ ОБНОВЛЕНИЕ EMAIL/ИМЕНИ/ПАРОЛЯ
     {
       "DownstreamPathTemplate": "/api/v1/user/update/{everything}",
       "DownstreamScheme": "http",
@@ -126,6 +109,9 @@
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "User,Admin"
       }
     },
 
@@ -143,10 +129,13 @@
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ - требует токен
+    // 🗑️ УДАЛЕНИЕ - User, Admin
     {
       "DownstreamPathTemplate": "/api/v1/user/delete/{id}",
       "DownstreamScheme": "http",
@@ -160,10 +149,13 @@
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "User,Admin"
       }
     },
 
-    // 👥 ПОЛУЧЕНИЕ ВСЕХ - требует токен
+    // 👥 ПОЛУЧЕНИЕ ВСЕХ - с кэшированием
     {
       "DownstreamPathTemplate": "/api/v1/user/get/all",
       "DownstreamScheme": "http",
@@ -177,10 +169,17 @@
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "User,Admin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 30,
+        "Region": "users-list"
       }
     },
 
-    // 👤 ПОЛУЧЕНИЕ ПО ID - требует токен
+    // 👤 ПОЛУЧЕНИЕ ПО ID - только Admin
     {
       "DownstreamPathTemplate": "/api/v1/user/{id}",
       "DownstreamScheme": "http",
@@ -194,14 +193,17 @@
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
       }
     },
 
     // ==============================================
-    // 📊 LOGGING SERVICE - требует токен
+    // 📊 LOGGING SERVICE (Port 5002) - только Admin
     // ==============================================
 
-    // 📋 ПОЛУЧЕНИЕ ЛОГОВ
+    // 📋 ПОЛУЧЕНИЕ ЛОГОВ - с кэшированием
     {
       "DownstreamPathTemplate": "/api/v1/logs",
       "DownstreamScheme": "http",
@@ -215,10 +217,23 @@
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 10,
+        "Region": "logs"
+      },
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "PeriodTimespan": 60,
+        "Limit": 30
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ ЛОГОВ
+    // 🗑️ УДАЛЕНИЕ ЛОГОВ - только Admin
     {
       "DownstreamPathTemplate": "/api/v1/logs/cleanup",
       "DownstreamScheme": "http",
@@ -232,14 +247,37 @@
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      }
+    },
+
+    // 🗑️ УДАЛЕНИЕ ЛОГОВ ПО ДНЯМ - только Admin
+    {
+      "DownstreamPathTemplate": "/api/v1/logs/cleanup/days",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-logging",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/logging/cleanup/days",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
       }
     },
 
     // ==============================================
-    // 📧 NOTIFICATION SERVICE - требует токен
+    // 📧 NOTIFICATION SERVICE (Port 5003) - только Admin
     // ==============================================
 
-    // 📨 ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ
+    // 📨 ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ - с кэшированием
     {
       "DownstreamPathTemplate": "/api/v1/notification",
       "DownstreamScheme": "http",
@@ -253,10 +291,17 @@
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 15,
+        "Region": "notifications"
       }
     },
 
-    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ
+    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ - только Admin
     {
       "DownstreamPathTemplate": "/api/v1/notification/cleanup",
       "DownstreamScheme": "http",
@@ -270,6 +315,29 @@
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      }
+    },
+
+    // 🗑️ УДАЛЕНИЕ УВЕДОМЛЕНИЙ ПО ДНЯМ - только Admin
+    {
+      "DownstreamPathTemplate": "/api/v1/notification/cleanup/days",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-notification",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/notifications/cleanup/days",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
       }
     }
   ],
