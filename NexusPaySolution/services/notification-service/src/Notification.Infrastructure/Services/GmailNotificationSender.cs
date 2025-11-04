@@ -1,12 +1,51 @@
-﻿using Notification.Application.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using Notification.Application.Interfaces;
+using System.Net;
+using System.Net.Mail;
 
 namespace Notification.Infrastructure.Services
 {
-    public class EmailNotificationSender : IEmailNotificationSender
+    public class GmailNotificationSender : IEmailNotificationSender
     {
+        public GmailNotificationSender(IOptions<SmtpSettings> options, ILoggerService loggerService)
+        {
+            _smtpSettings = options.Value;
+            _loggerService = loggerService;
+        }
+
+        private readonly SmtpSettings _smtpSettings;
+        private readonly ILoggerService _loggerService;
+
         public async Task SendAsync(string email, string subject, string message)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var smtpClient = new SmtpClient()
+                {
+                    EnableSsl = _smtpSettings.EnableSsl,
+                    Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password)
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_smtpSettings.FromEmail, _smtpSettings.FromName),
+                    Subject = subject,
+                    Body = message,
+                    IsBodyHtml = true
+                };
+
+                mailMessage.To.Add(email);
+
+                await smtpClient.SendMailAsync(mailMessage);
+
+                await _loggerService.LogInfo($"message sent to email: {email}", "GmailNotificationSender.SendAsync");
+            }
+            catch (Exception e)
+            {
+                await _loggerService.LogError($"message sent to email: {email} error", "GmailNotificationSender.SendAsync", e.Message);
+
+                throw;
+            }
         }
     }
 }

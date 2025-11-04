@@ -3,7 +3,7 @@ using Notification.Domain.Models;
 
 namespace Notification.Application.Services
 {
-    public class LoggerService
+    public class LoggerService : ILoggerService
     {
         public LoggerService(IProducer producer)
         {

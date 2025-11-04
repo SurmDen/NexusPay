@@ -10,7 +10,6 @@ namespace Notification.Application.EmailNotification.Command
 {
     public class RemoveNotificationsCommand : IRequest
     {
-        [Required]
         public DateTime Before { get; set; }
     }
 }

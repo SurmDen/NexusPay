@@ -22,7 +22,7 @@ namespace Identity.Application.User.Handlers
         {
             try
             {
-                await _producer.SendObject("notification.identity", notification);
+                await _producer.SendObject("notification.email.confirm", notification);
             }
             catch (Exception)
             {
