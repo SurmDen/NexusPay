@@ -1,6 +1,6 @@
 services:
   # ========================
-  # 🗄️ БАЗЫ ДАННЫХ
+  # 🗄️ БАЗЫ ДАННЫХ (с healthcheck)
   # ========================
   postgres-identity:
     image: postgres:15
@@ -13,6 +13,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_identity_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - nexuspay-network
 
@@ -27,6 +33,12 @@ services:
       - "5433:5432"
     volumes:
       - postgres_logging_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - nexuspay-network
 
@@ -41,6 +53,12 @@ services:
       - "5434:5432"
     volumes:
       - postgres_notification_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - nexuspay-network
 
@@ -150,9 +168,12 @@ services:
     ports:
       - "5000:8080"
     depends_on:
-      - identity-service
-      - logging-service
-      - notification-service
+      identity-service:
+        condition: service_started
+      logging-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
     networks:
       - nexuspay-network
 
