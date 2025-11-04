@@ -8,14 +8,12 @@ namespace Logging.Infrastructure.Repositories
 {
     public class LoggingRepository : ILoggingRepository
     {
-        public LoggingRepository(ILoggerService loggerService, LoggingDbContext loggingDbContext)
+        public LoggingRepository(LoggingDbContext loggingDbContext)
         {
             _context = loggingDbContext;
-            _loggerService = loggerService;
         }
 
         private readonly LoggingDbContext _context;
-        private readonly ILoggerService _loggerService;
 
         public async Task CreateLogAsync(LogMessage logMessage)
         {
@@ -30,7 +28,6 @@ namespace Logging.Infrastructure.Repositories
 
             try
             {
-                await _loggerService.LogInfo($"Deleting logs before: {date}", methodName);
 
                 var logsToDelete = _context.LogMessages.Where(x => x.Timestamp < date);
 
@@ -40,12 +37,9 @@ namespace Logging.Infrastructure.Repositories
 
                 await _context.SaveChangesAsync();
 
-                await _loggerService.LogInfo($"Deleted {count} logs before {date}", methodName);
             }
             catch (Exception ex)
             {
-                await _loggerService.LogError($"Failed to delete logs before {date}", methodName, ex.Message);
-
                 throw;
             }
         }
@@ -56,7 +50,6 @@ namespace Logging.Infrastructure.Repositories
 
             try
             {
-                await _loggerService.LogInfo($"Getting logs with filters - Service: {serviceName ?? "any"}, Level: {logLevel ?? "any"}, From: {from?.ToString() ?? "any"}", methodName);
 
                 var query = _context.LogMessages.AsQueryable();
 
@@ -77,13 +70,10 @@ namespace Logging.Infrastructure.Repositories
 
                 var logs = await query.ToListAsync();
 
-                await _loggerService.LogInfo($"Retrieved {logs.Count} logs", methodName);
-
                 return logs;
             }
             catch (Exception ex)
             {
-                await _loggerService.LogError("Failed to get logs", methodName, ex.Message);
 
                 throw;
             }
