@@ -13,6 +13,7 @@ namespace Identity.Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -20,14 +21,33 @@ namespace Identity.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Помечаем Value Objects как Complex Types
             modelBuilder.Entity<User>(userBuilder =>
             {
                 userBuilder.ToTable("users");
                 userBuilder.HasKey(x => x.Id);
-                userBuilder.HasAlternateKey(x => x.UserEmail);
-                userBuilder.HasIndex(u => u.UserEmail);
 
-                userBuilder.HasData(new User("Denis", new Email("surmanidzedenis609@gmail.com"), new Password("123456"), new RoleName("Admin")));
+                // Complex Type свойства
+                userBuilder.ComplexProperty(u => u.UserEmail, e =>
+                {
+                    e.Property(p => p.Value).HasColumnName("Email").IsRequired();
+                });
+
+                userBuilder.ComplexProperty(u => u.Password, p =>
+                {
+                    p.Property(p => p.Hash).HasColumnName("PasswordHash").IsRequired();
+                });
+
+                userBuilder.ComplexProperty(u => u.RoleName, r =>
+                {
+                    r.Property(p => p.Value).HasColumnName("Role").IsRequired();
+                });
+
+                // Остальные настройки
+                userBuilder.Property(u => u.UserName).IsRequired();
+                userBuilder.Property(u => u.IsActive).IsRequired();
+                userBuilder.Property(u => u.CreatedAt).IsRequired();
+                userBuilder.Property(u => u.UpdatedAt).IsRequired();
             });
         }
     }

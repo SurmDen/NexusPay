@@ -1,8 +1,10 @@
 using Logging.API.Extentions;
 using Logging.Application.Interfaces;
 using Logging.Application.Log.Commands;
+using Logging.Application.Log.EventHandlers;
 using Logging.Domain.Events;
 using Logging.Infrastructure.MessageBus.Options;
+using Logging.Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -75,7 +77,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    config.RegisterServicesFromAssembly(typeof(DeleteLogsCommand).Assembly);
+    config.RegisterServicesFromAssembly(typeof(LogReceivedEventHandler).Assembly);
+    config.RegisterServicesFromAssembly(typeof(LoggingRepository).Assembly);
     config.RegisterServicesFromAssembly(typeof(LogReceivedEvent).Assembly);
 });
 
@@ -137,6 +140,8 @@ while (retry < 5)
 
         await consumer.Subscribe("logging.identity", "identity-logs-queue");
         await consumer.Subscribe("logging.notification", "notification-logs-queue");
+
+        Console.WriteLine("successfully connected");
 
         break;
     }

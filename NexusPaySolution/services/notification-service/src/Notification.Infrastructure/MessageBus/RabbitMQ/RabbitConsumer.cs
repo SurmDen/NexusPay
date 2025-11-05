@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Notification.Application.Interfaces;
 using Notification.Infrastructure.MessageBus.Options;
@@ -11,7 +12,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 {
     public class RabbitConsumer : IConsumer, IDisposable
     {
-        public RabbitConsumer(IOptions<RabbitMQOptions> options, IMediator mediator)
+        public RabbitConsumer(IOptions<RabbitMQOptions> options, IMediator mediator, IServiceProvider serviceProvider)
         {
             _options = options.Value;
             _mediator = mediator;
@@ -45,15 +46,19 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
                 throw;
             }
+
+            _serviceProvider = serviceProvider;
         }
 
         private readonly RabbitMQOptions _options;
         private readonly IConnection _connection;
         private readonly IChannel _channel;
         private readonly IMediator _mediator;
+        private readonly IServiceProvider _serviceProvider;
 
         public async Task Subscribe<T>(string routingKey, string queueName)
         {
+
             string methodName = $"{nameof(RabbitConsumer)}.{nameof(Subscribe)}";
 
             try
@@ -101,7 +106,12 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
                         if (message != null)
                         {
-                            await _mediator.Publish(message);
+                            using (var scope = _serviceProvider.CreateScope())
+                            {
+                                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                                await mediator.Publish(message);
+                            }
 
                             await _channel.BasicAckAsync(ea.DeliveryTag, multiple: false);
 
@@ -109,8 +119,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                     }
                     catch (Exception ex)
                     {
-
-                        await _channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: true);
+                        await _channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
 
                         throw;
                     }

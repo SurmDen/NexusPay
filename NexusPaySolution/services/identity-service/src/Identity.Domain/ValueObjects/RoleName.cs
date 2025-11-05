@@ -10,6 +10,11 @@ namespace Identity.Domain.ValueObjects
 {
     public class RoleName : ValueObject
     {
+        private RoleName()
+        {
+            
+        }
+
         public RoleName(string roleName)
         {
             if (string.IsNullOrWhiteSpace(roleName))

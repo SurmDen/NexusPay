@@ -33,6 +33,8 @@ namespace Logging.Domain.Entities
                 throw new ArgumentException("Invalid time format");
             }
 
+            Timestamp = time.Value;
+
             Exception = exception;
         }
 

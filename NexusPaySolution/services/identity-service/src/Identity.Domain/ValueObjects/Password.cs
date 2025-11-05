@@ -11,12 +11,17 @@ namespace Identity.Domain.ValueObjects
 {
     public class Password : ValueObject
     {
+        private Password()
+        {
+            
+        }
+
         public Password(string password)
         {
             Hash = GenerateHash(password);
         }
 
-        public string Hash { get; }
+        public string Hash { get; private set; }
 
         private string GenerateHash(string value)
         {

@@ -1,6 +1,7 @@
 ﻿using Identity.Domain.Events;
 using Identity.Domain.Exceptions;
 using Identity.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Identity.Domain.Entities
 {
@@ -41,11 +42,10 @@ namespace Identity.Domain.Entities
 
         public RoleName RoleName { get; set; }
 
-        public Guid RoleId { get; private set; }
-
-
+        [NotMapped]
         private List<DomainEvent> _domainEvents = new();
 
+        [NotMapped]
         public IReadOnlyList<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public void ClearEventList()

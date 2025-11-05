@@ -11,6 +11,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddLogging();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

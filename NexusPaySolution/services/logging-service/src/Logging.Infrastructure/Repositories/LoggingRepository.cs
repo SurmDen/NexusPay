@@ -46,7 +46,6 @@ namespace Logging.Infrastructure.Repositories
 
         public async Task<List<LogMessage>> GetLogsAsync(string? serviceName = null, string? logLevel = null, DateTime? from = null)
         {
-            string methodName = $"{nameof(LoggingRepository)}.{nameof(GetLogsAsync)}";
 
             try
             {

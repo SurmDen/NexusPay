@@ -13,14 +13,12 @@ namespace Logging.Application.Log.EventHandlers
 {
     public class LogReceivedEventHandler : INotificationHandler<LogReceivedEvent>
     {
-        public LogReceivedEventHandler(ILoggerService loggerService, ILoggingRepository loggingRepository)
+        public LogReceivedEventHandler( ILoggingRepository loggingRepository)
         {
-            _loggerService = loggerService;
             _repository = loggingRepository;
         }
 
         private readonly ILoggingRepository _repository;
-        private readonly ILoggerService _loggerService;
 
         public async Task Handle(LogReceivedEvent notification, CancellationToken cancellationToken)
         {
@@ -38,12 +36,9 @@ namespace Logging.Application.Log.EventHandlers
 
                 await _repository.CreateLogAsync(logMessage);
 
-                await _loggerService.LogInfo($"Log from {notification.ServiceName} added", "LogReceivedEventHandler.Handle");
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                await _loggerService.LogError(e.Message, "LogReceivedEventHandler.Handle", e.GetType().FullName);
-
                 throw;
             }
         }

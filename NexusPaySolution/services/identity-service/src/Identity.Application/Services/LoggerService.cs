@@ -27,7 +27,11 @@ namespace Identity.Application.Services
                 LogLevel = "Information"
             };
 
+            Console.WriteLine("User registered");
+
             await _producer.SendObject("logging.identity", logMessage);
+
+            Console.WriteLine("User registered after");
         }
 
         public async Task LogWarning(string message, string action)

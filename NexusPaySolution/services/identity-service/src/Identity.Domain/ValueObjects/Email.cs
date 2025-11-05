@@ -10,6 +10,8 @@ namespace Identity.Domain.ValueObjects
 {
     public class Email : ValueObject
     {
+        private Email() { }
+
         public Email(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -25,7 +27,7 @@ namespace Identity.Domain.ValueObjects
             Value = value.Trim().ToLower();
         }
 
-        public string Value { get; }
+        public string Value { get; private set; }
 
         private bool IsValidEmail(string email)
         {

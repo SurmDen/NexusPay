@@ -47,25 +47,25 @@ namespace Identity.API.Controllers
                 await _logger.LogInfo($"User created successfully with ID: {user.Id}", methodName);
                 return Ok(new { message = "user created, but not active. Confirmation code sent to email address", user = user, jwt_token = token, code = 200 });
             }
-            catch (InvalidPasswordException e)
+            catch (InvalidPasswordException ex)
             {
-                await _logger.LogWarning($"Invalid password exception: {e.Message}", methodName);
-                return BadRequest(new { message = e.Message, code = 400 });
+                await _logger.LogWarning($"Invalid password exception: {ex.Message}", methodName);
+                return BadRequest(new { message = ex.Message, code = 400 });
             }
-            catch (InvalidUserException e)
+            catch (InvalidUserException ex)
             {
-                await _logger.LogWarning($"Invalid user exception: {e.Message}", methodName);
-                return BadRequest(new { message = e.Message, code = 400 });
+                await _logger.LogWarning($"Invalid user exception: {ex.Message}", methodName);
+                return BadRequest(new { message = ex.Message, code = 400 });
             }
-            catch (InvalidEmailException e)
+            catch (InvalidEmailException ex)
             {
-                await _logger.LogWarning($"Invalid email exception: {e.Message}", methodName);
-                return BadRequest(new { message = e.Message, code = 400 });
+                await _logger.LogWarning($"Invalid email exception: {ex.Message}", methodName);
+                return BadRequest(new { message = ex.Message, code = 400 });
             }
-            catch (NotFoundException e)
+            catch (NotFoundException ex)
             {
-                await _logger.LogWarning($"Not found exception: {e.Message}", methodName);
-                return NotFound(new { message = e.Message });
+                await _logger.LogWarning($"Not found exception: {ex.Message}", methodName);
+                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {

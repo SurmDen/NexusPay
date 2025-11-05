@@ -6,6 +6,7 @@ using Notification.Domain.Events;
 using Notification.Infrastructure.MessageBus.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Notification.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +81,8 @@ builder.Services.AddMediatR(config =>
 });
 
 builder.Services.Configure<RabbitMQOptions>(builder.Configuration.GetSection("RabbitMQ"));
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.AddApplicationDbContext(builder.Configuration);
 

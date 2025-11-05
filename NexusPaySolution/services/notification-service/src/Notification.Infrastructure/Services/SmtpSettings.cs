@@ -8,18 +8,18 @@ namespace Notification.Infrastructure.Services
 {
     public class SmtpSettings
     {
-        public string Host { get; set; }
+        public string Host { get; set; } = "smtp.gmail.com";
 
-        public int Port { get; set; }
+        public int Port { get; set; } = 587;
 
-        public string Username { get; set; }
+        public string Username { get; set; } = "surmanidzedenis609@gmail.com";
 
-        public string Password { get; set; }
+        public string Password { get; set; } = "knqs wvxl tzjc rgam";
 
-        public bool EnableSsl { get; set; }
+        public bool EnableSsl { get; set; } = true;
 
-        public string FromName { get; set; }
+        public string FromName { get; set; } = "NexusPay";
 
-        public string FromEmail { get; set; }
+        public string FromEmail { get; set; } = "surmanidzedenis609@gmail.com";
     }
 }
