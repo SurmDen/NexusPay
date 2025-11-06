@@ -9,13 +9,14 @@ namespace Identity.Application.User.Commands
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
     {
-        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator, ICodeGenerator codeGenerator, IDistributedCache cache, ILoggerService loggerService)
+        public RegisterUserCommandHandler(IUserRepository userRepository, IMediator mediator, ICodeGenerator codeGenerator, IDistributedCache cache, ILoggerService loggerService, ICodeCardEditor codeCardEditor)
         {
             _mediator = mediator;
             _codeGenerator = codeGenerator;
             _userRepository = userRepository;
             _cache = cache;
             _loggerService = loggerService;
+            _codeCardEditor = codeCardEditor;
         }
 
         private readonly IUserRepository _userRepository;
@@ -23,6 +24,7 @@ namespace Identity.Application.User.Commands
         private readonly ICodeGenerator _codeGenerator;
         IDistributedCache _cache;
         private readonly ILoggerService _loggerService;
+        private readonly ICodeCardEditor _codeCardEditor;
 
         public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
@@ -47,7 +49,7 @@ namespace Identity.Application.User.Commands
 
                 await _cache.SetStringAsync($"email_comfirmation_{user.UserEmail.Value}", $"{code}", cacheOptions);
 
-                registeredUser.AddConfirmationEvent("Nexus Pay", $"<h1>Your account created</h1><p>Confirmation code: <b><h3>{code}</h3></b></p>");
+                registeredUser.AddConfirmationEvent("Nexus Pay", _codeCardEditor.EditCode(code.ToString()));
 
                 foreach (var userEvents in registeredUser.DomainEvents)
                 {

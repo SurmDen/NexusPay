@@ -27,6 +27,7 @@ namespace Identity.API.Extentions
         {
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddSingleton<ICodeCardEditor, CodeCardEditor>();
             services.AddSingleton<ITokenService, JwtTokenService>();
             services.AddSingleton<IProducer, RabbitProducer>();
             services.AddSingleton<IConsumer, RabbitConsumer>();
