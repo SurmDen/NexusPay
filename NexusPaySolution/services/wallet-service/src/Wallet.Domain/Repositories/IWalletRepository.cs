@@ -9,7 +9,9 @@ namespace Wallet.Domain.Repositories
 {
     public interface IWalletRepository
     {
-        public Task<WalletModel> CreateWalletAsync();
+        public Task<WalletModel> GetWalletByUserIdAsync(Guid userId);
+
+        public Task<WalletModel> CreateWalletAsync(string valute, string userName, string userEmail, Guid userId);
 
         public Task UpdateBalancesAsync(Guid senderId, Guid receiverId, decimal amount);
 
@@ -17,8 +19,10 @@ namespace Wallet.Domain.Repositories
 
         public Task<WalletModel> UpdateUserEmailAsync(string email, Guid userId);
 
-        public Task BlockWalletId(Guid walletId);
+        public Task DeleteWalletAsync(Guid userId);
 
-        public Task UnblockWalletId(Guid walletId);
+        public Task BlockWalletAsync(Guid walletId);
+
+        public Task UnblockWalletAsync(Guid walletId);
     }
 }
