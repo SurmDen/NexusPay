@@ -140,6 +140,7 @@ while (retry < 5)
 
         await consumer.Subscribe("logging.identity", "identity-logs-queue");
         await consumer.Subscribe("logging.notification", "notification-logs-queue");
+        await consumer.Subscribe("logging.wallet", "wallet-logs-queue");
 
         Console.WriteLine("successfully connected");
 

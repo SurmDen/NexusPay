@@ -6,7 +6,7 @@ namespace Wallet.Domain.Entities
 {
     public class WalletModel : Entity
     {
-        public WalletModel(string valute, string userName, string userEmail, Guid userId)
+        public WalletModel(string userName, string userEmail, Guid userId)
         {
             WalletCreatedEvent walletCreatedEvent;
 
@@ -21,13 +21,6 @@ namespace Wallet.Domain.Entities
                 }
 
                 UserName = userName;
-
-                if (string.IsNullOrWhiteSpace(valute))
-                {
-                    throw new InvalidWalletOperationException("Invalid currency");
-                }
-
-                ValuteName = valute;
 
                 if (string.IsNullOrWhiteSpace(userEmail))
                 {
@@ -64,8 +57,6 @@ namespace Wallet.Domain.Entities
 
 
         public decimal Balance { get; private set; }
-
-        public string ValuteName { get; private set; }
 
         public string UserName { get; private set; }
 

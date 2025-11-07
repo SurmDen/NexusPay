@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Application.User.Handlers
 {
-    public class UserDeletedEventHandler : INotificationHandler<UserDeactivatedEvent>
+    public class UserDeletedEventHandler : INotificationHandler<UserDeletedEvent>
     {
         public UserDeletedEventHandler(IProducer producer)
         {
@@ -18,7 +18,7 @@ namespace Identity.Application.User.Handlers
 
         private readonly IProducer _producer;
 
-        public async Task Handle(UserDeactivatedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(UserDeletedEvent notification, CancellationToken cancellationToken)
         {
             try
             {
