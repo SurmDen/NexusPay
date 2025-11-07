@@ -20,13 +20,13 @@ namespace Wallet.API.Controllers
         private ILoggerService _logger;
 
         [HttpGet("balance/get/userid/{id:guid}")]
-        public async Task<IActionResult> GetBalanceAsync(Guid userId)
+        public async Task<IActionResult> GetBalanceAsync(Guid id)
         {
             try
             {
                 GetBalanceQuery query = new GetBalanceQuery()
                 {
-                    UserId = userId
+                    UserId = id
                 };
 
                 decimal walletBalance = await _mediator.Send(query);

@@ -70,7 +70,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Surman123$
     ports:
-      - "5434:5432"
+      - "5435:5432"
     volumes:
       - postgres_wallet_data:/var/lib/postgresql/data
     healthcheck:
@@ -181,7 +181,7 @@ services:
     build:
       context: ./NexusPaySolution
       dockerfile: ../docker/wallet/Dockerfile
-    container_name: wallet-notification
+    container_name: nexuspay-wallet
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://*:8080
@@ -219,6 +219,7 @@ volumes:
   postgres_identity_data:
   postgres_logging_data:
   postgres_notification_data:
+  postgres_wallet_data:
   rabbitmq_data:
   redis_data:
 
