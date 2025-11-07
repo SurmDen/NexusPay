@@ -17,8 +17,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
             _options = options.Value;
             _mediator = mediator;
 
-            string methodName = $"{nameof(RabbitConsumer)}.ctor";
-
             try
             {
 
@@ -41,7 +39,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                 ).Wait();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -58,9 +56,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
         public async Task Subscribe<T>(string routingKey, string queueName)
         {
-
-            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Subscribe)}";
-
             try
             {
 
@@ -92,7 +87,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
                 consumer.ReceivedAsync += async (model, ea) =>
                 {
-                    string consumerMethodName = $"{nameof(RabbitConsumer)}.ReceivedAsync";
 
                     try
                     {
@@ -117,7 +111,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         await _channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
 
@@ -132,7 +126,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                 );
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -140,8 +134,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
         public void Dispose()
         {
-            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Dispose)}";
-
             _channel?.CloseAsync().Wait();
             _channel?.Dispose();
 

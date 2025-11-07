@@ -8,6 +8,6 @@ namespace Identity.Application.Interfaces
 {
     public interface IConsumer
     {
-        public Task Subscribe<T>(string routingKey, string queueName, Action<T> handler);
+        public Task Subscribe<T>(string routingKey, string queueName);
     }
 }

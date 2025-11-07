@@ -4,10 +4,7 @@ using Identity.Domain.Repositories;
 using Identity.Infrastructure.Data;
 using Identity.Infrastructure.MessageBus.RabbitMQ;
 using Identity.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace Identity.API.Extentions
 {

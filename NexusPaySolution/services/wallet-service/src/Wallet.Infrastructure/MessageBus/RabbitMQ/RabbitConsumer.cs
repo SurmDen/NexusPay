@@ -1,14 +1,14 @@
-﻿using Identity.Application.Interfaces;
-using Identity.Infrastructure.MessageBus.Options;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client;
 using System.Text;
+using Wallet.Application.Interfaces;
+using Wallet.Infrastructure.MessageBus.Options;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Identity.Infrastructure.MessageBus.RabbitMQ
+namespace Wallet.Infrastructure.MessageBus.RabbitMQ
 {
     public class RabbitConsumer : IConsumer, IDisposable
     {
@@ -16,6 +16,8 @@ namespace Identity.Infrastructure.MessageBus.RabbitMQ
         {
             _options = options.Value;
             _mediator = mediator;
+
+            string methodName = $"{nameof(RabbitConsumer)}.ctor";
 
             try
             {
@@ -41,7 +43,6 @@ namespace Identity.Infrastructure.MessageBus.RabbitMQ
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -56,6 +57,9 @@ namespace Identity.Infrastructure.MessageBus.RabbitMQ
 
         public async Task Subscribe<T>(string routingKey, string queueName)
         {
+
+            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Subscribe)}";
+
             try
             {
 
@@ -87,6 +91,8 @@ namespace Identity.Infrastructure.MessageBus.RabbitMQ
 
                 consumer.ReceivedAsync += async (model, ea) =>
                 {
+                    string consumerMethodName = $"{nameof(RabbitConsumer)}.ReceivedAsync";
+
                     try
                     {
 
@@ -133,6 +139,8 @@ namespace Identity.Infrastructure.MessageBus.RabbitMQ
 
         public void Dispose()
         {
+            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Dispose)}";
+
             _channel?.CloseAsync().Wait();
             _channel?.Dispose();
 
