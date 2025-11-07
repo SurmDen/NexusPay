@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Wallet.Application\Wallet.Application.csproj" />
     <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
     <ProjectReference Include="..\Wallet.Infrastructure\Wallet.Infrastructure.csproj" />

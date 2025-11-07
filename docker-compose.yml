@@ -62,6 +62,26 @@ services:
     networks:
       - nexuspay-network
 
+  postgres-wallet:
+    image: postgres:15
+    container_name: nexuspay-wallet-db
+    environment:
+      POSTGRES_DB: NexusPay_Wallet_DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Surman123$
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_wallet_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - nexuspay-network
+
   # ========================
   # 🐰 RABBITMQ (с health check)
   # ========================
@@ -149,6 +169,24 @@ services:
       ASPNETCORE_URLS: http://*:8080
     ports:
       - "5003:8080"
+    depends_on:
+      postgres-notification:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - nexuspay-network
+
+  wallet-service:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/wallet/Dockerfile
+    container_name: wallet-notification
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
+    ports:
+      - "5004:8080"
     depends_on:
       postgres-notification:
         condition: service_healthy

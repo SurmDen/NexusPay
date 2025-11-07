@@ -339,7 +339,30 @@
       "RouteClaimsRequirement": {
         "role": "Admin"
       }
+    },
+
+    // ==============================================
+    // 📧 WALLET SERVICE (Port 5004) - только User
+    // ==============================================
+    {
+      "DownstreamPathTemplate": "/api/v1/wallet/balance/get/userid/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-wallet",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/wallet/balance/get/userid/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin,User"
+      }
     }
+
   ],
 
   "GlobalConfiguration": {
