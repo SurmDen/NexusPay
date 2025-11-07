@@ -137,6 +137,7 @@ while (retry < 5)
         var consumer = app.Services.GetRequiredService<IConsumer>();
 
         await consumer.Subscribe<CreateTransactionEvent>("transaction.create", "create-transaction-queue");
+        await consumer.Subscribe<UserRegisteredEvent>("user.registered", "user-registered-queue");
 
         break;
     }
