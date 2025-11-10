@@ -22,7 +22,7 @@ namespace Notification.Application.Services
                 LogLevel = "Information"
             };
 
-            await _producer.SendObject("logging.notification", logMessage);
+            await _producer.SendObject("logging", logMessage);
         }
 
         public async Task LogWarning(string message, string action)
@@ -35,7 +35,7 @@ namespace Notification.Application.Services
                 LogLevel = "Warning"
             };
 
-            await _producer.SendObject("logging.notification", logMessage);
+            await _producer.SendObject("logging", logMessage);
         }
 
         public async Task LogError(string message, string action, string? exception)
@@ -49,7 +49,7 @@ namespace Notification.Application.Services
                 Exception = exception
             };
 
-            await _producer.SendObject("logging.notification", logMessage);
+            await _producer.SendObject("logging", logMessage);
         }
     }
 }

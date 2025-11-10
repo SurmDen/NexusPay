@@ -27,9 +27,7 @@ namespace Identity.Application.Services
                 LogLevel = "Information"
             };
 
-            Console.WriteLine("User registered");
-
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging", logMessage);
 
             Console.WriteLine("User registered after");
         }
@@ -44,7 +42,7 @@ namespace Identity.Application.Services
                 LogLevel = "Warning"
             };
 
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging", logMessage);
         }
 
         public async Task LogError(string message, string action, string? exception)
@@ -58,7 +56,7 @@ namespace Identity.Application.Services
                 Exception = exception
             };
 
-            await _producer.SendObject("logging.identity", logMessage);
+            await _producer.SendObject("logging", logMessage);
         }
     }
 }

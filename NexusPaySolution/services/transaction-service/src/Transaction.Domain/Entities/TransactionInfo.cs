@@ -1,7 +1,4 @@
-﻿using MediatR;
-using Transaction.Domain.Events;
-
-namespace Transaction.Domain.Entities
+﻿namespace Transaction.Domain.Entities
 {
     public class TransactionInfo : Entity
     {
@@ -38,10 +35,6 @@ namespace Transaction.Domain.Entities
             {
                 Message = message;
             }
-
-            TransactionCreatedEvent transactionCreatedEvent = new TransactionCreatedEvent(Id, SenderUserId, ReceiverUserId, TransactionTime, Amount );
-
-            Events.Add( transactionCreatedEvent );
         }
 
         private TransactionInfo()
@@ -62,11 +55,6 @@ namespace Transaction.Domain.Entities
         public string Status { get; private set; }
 
         public string? ErrorMessage { get; private set; }
-
-
-        private List<INotification> Events = new List<INotification>();
-
-        public IReadOnlyList<INotification> TransactionEvents => Events;
 
 
         public void SetStatus(string status)

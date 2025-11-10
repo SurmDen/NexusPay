@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wallet.Application.Interfaces;
-using Wallet.Domain.Models;
+﻿using Transaction.Application.Interfaces;
+using Transaction.Domain.Models;
+
 
 namespace Wallet.Application.Services
 {
@@ -21,7 +17,7 @@ namespace Wallet.Application.Services
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "wallet-service",
+                ServiceName = "transaction-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Information"
@@ -34,7 +30,7 @@ namespace Wallet.Application.Services
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "wallet-service",
+                ServiceName = "transaction-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Warning"
@@ -47,7 +43,7 @@ namespace Wallet.Application.Services
         {
             LogMessage logMessage = new LogMessage()
             {
-                ServiceName = "wallet-service",
+                ServiceName = "transaction-service",
                 Message = message,
                 Action = action,
                 LogLevel = "Error",

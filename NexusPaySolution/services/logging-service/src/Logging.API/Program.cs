@@ -138,9 +138,7 @@ while (retry < 5)
     {
         var consumer = app.Services.GetRequiredService<IConsumer>();
 
-        await consumer.Subscribe("logging.identity", "identity-logs-queue");
-        await consumer.Subscribe("logging.notification", "notification-logs-queue");
-        await consumer.Subscribe("logging.wallet", "wallet-logs-queue");
+        await consumer.Subscribe("logging", "logs-queue");
 
         Console.WriteLine("successfully connected");
 

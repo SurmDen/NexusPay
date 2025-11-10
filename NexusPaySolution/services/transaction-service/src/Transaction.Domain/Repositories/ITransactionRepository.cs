@@ -8,8 +8,10 @@ namespace Transaction.Domain.Repositories
 
         public Task<List<TransactionInfo>> GetAllTransactionsAsync();
 
-        public Task<TransactionInfo> GetUserTransactionsAsync(Guid userId);
+        public Task<List<TransactionInfo>> GetUserTransactionsAsync(Guid userId);
 
-        public Task SetStatusToTransactionAsync(Guid transactionId, string? errorMessage = null);
+        public Task<TransactionInfo> GetTransactionByIdAsync(Guid transactionId);
+
+        public Task SetStatusToTransactionAsync(Guid transactionId, string status, string? errorMessage = null);
     }
 }
