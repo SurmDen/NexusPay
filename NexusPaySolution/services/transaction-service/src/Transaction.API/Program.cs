@@ -77,6 +77,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     config.RegisterServicesFromAssembly(typeof(CreateTransactionCommand).Assembly);
+    config.RegisterServicesFromAssembly(typeof(RabbitMQOptions).Assembly);
     config.RegisterServicesFromAssembly(typeof(TransactionInfo).Assembly);
 });
 

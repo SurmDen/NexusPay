@@ -5,7 +5,7 @@ using Transaction.Domain.Repositories;
 
 namespace Transaction.Application.TransactionInfo.Queries
 {
-    public class GetUserTransactionsQueryHandler : IRequestHandler<GetUserTransactionsQuery, List<TransactionDto]>>
+    public class GetUserTransactionsQueryHandler : IRequestHandler<GetUserTransactionsQuery, List<TransactionDto>>
     {
         public GetUserTransactionsQueryHandler(ILoggerService logger, ITransactionRepository repository)
         {
