@@ -2,7 +2,7 @@
 using Transaction.Domain.Models;
 
 
-namespace Wallet.Application.Services
+namespace Transaction.Application.Services
 {
     public class LoggerService : ILoggerService
     {
