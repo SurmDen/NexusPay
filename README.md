@@ -238,3 +238,18 @@ cd NexusPay
 ```bash
 docker-compose up --build
 ```
+
+
+## 📚 API Documentation
+
+### Swagger UI Endpoints
+
+After starting the application with `docker-compose up`, you can access the Swagger documentation for each service at the following URLs:
+
+| Service | Swagger UI URL | Port | Description |
+|---------|----------------|------|-------------|
+| 🔐 **Identity Service** | http://localhost:5001/api-docs/ | 5001 | Authentication & User Management API |
+| 📝 **Logging Service** | http://localhost:5002/api-docs/ | 5002 | Logging & Monitoring API |
+| 📧 **Notification Service** | http://localhost:5003/api-docs/ | 5003 | Email & Notification API |
+| 💰 **Wallet Service** | http://localhost:5004/api-docs/ | 5004 | Wallet Management API |
+| 💳 **Transaction Service** | http://localhost:5005/api-docs/ | 5005 | Transaction Processing API |
