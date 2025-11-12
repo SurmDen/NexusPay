@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY services/transaction-service/src/ ./
+
+RUN dotnet restore Transaction.API/Transaction.API.csproj
+RUN dotnet publish Transaction.API/Transaction.API.csproj -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Transaction.API.dll"]

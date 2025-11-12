@@ -82,6 +82,26 @@ services:
     networks:
       - nexuspay-network
 
+  postgres-transaction:
+      image: postgres:15
+      container_name: nexuspay-transaction-db
+      environment:
+        POSTGRES_DB: NexusPay_Transaction_DB
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Surman123$
+      ports:
+        - "5436:5432"
+      volumes:
+        - postgres_transaction_data:/var/lib/postgresql/data
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s
+      networks:
+        - nexuspay-network
+
   # ========================
   # 🐰 RABBITMQ (с health check)
   # ========================
@@ -195,6 +215,24 @@ services:
     networks:
       - nexuspay-network
 
+  transaction-service:
+    build:
+      context: ./NexusPaySolution
+      dockerfile: ../docker/transaction/Dockerfile
+    container_name: nexuspay-transaction
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:8080
+    ports:
+      - "5005:8080"
+    depends_on:
+      postgres-notification:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - nexuspay-network
+
   api-gateway:
     build:
       context: ./NexusPaySolution
@@ -220,6 +258,7 @@ volumes:
   postgres_logging_data:
   postgres_notification_data:
   postgres_wallet_data:
+  postgres_transaction_data:
   rabbitmq_data:
   redis_data:
 

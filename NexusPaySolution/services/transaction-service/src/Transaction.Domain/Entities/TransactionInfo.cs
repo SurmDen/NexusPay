@@ -12,14 +12,14 @@
 
             if (senderId == Guid.Empty)
             {
-                throw new ArgumentNullException($"Empty sender Id");
+                throw new ArgumentException($"Empty sender Id");
             }
 
             SenderUserId = senderId;
 
             if (receiverId == Guid.Empty)
             {
-                throw new ArgumentNullException($"Empty receiver Id");
+                throw new ArgumentException($"Empty receiver Id");
             }
 
             ReceiverUserId = receiverId;

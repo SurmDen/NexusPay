@@ -342,7 +342,7 @@
     },
 
     // ==============================================
-    // 📧 WALLET SERVICE (Port 5004) - только User
+    // 📧 WALLET SERVICE (Port 5004)
     // ==============================================
     {
       "DownstreamPathTemplate": "/api/v1/wallet/balance/get/userid/{id}",
@@ -361,8 +361,91 @@
       "RouteClaimsRequirement": {
         "role": "Admin,User"
       }
-    }
+    },
 
+    // ==============================================
+    // Transaction SERVICE (Port 5004)
+    // ==============================================
+
+    // СОЗДАНИЕ ТРАНЗАКЦИИ
+    {
+      "DownstreamPathTemplate": "/api/v1/transaction/create",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-transaction",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/transaction/create",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin,User"
+      }
+    },
+
+    // ПОЛУЧЕНИЕ ТРАНЗАКЦИИ ПО ID
+    {
+      "DownstreamPathTemplate": "/api/v1/transaction/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-transaction",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/transaction/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin,User"
+      }
+    },
+
+    // ПОЛУЧЕНИЕ ВСЕХ ТРАНЗАКЦИЙ
+    {
+      "DownstreamPathTemplate": "/api/v1/transaction/get/all",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-transaction",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/transaction/all",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      }
+    },
+
+    // ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЬСКИХ ТРАНЗАКЦИЙ
+    {
+      "DownstreamPathTemplate": "/api/v1/transaction/user/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nexuspay-transaction",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/transaction/user/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin,User"
+      }
+    }
   ],
 
   "GlobalConfiguration": {
