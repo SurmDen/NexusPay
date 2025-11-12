@@ -223,8 +223,18 @@ graph TB
 # 🏃‍♂️ Getting Started
 
 ## Prerequisites
-- **.NET 8.0 SDK**
-- **Docker & Docker Compose**
-- **PostgreSQL 16+**
-- **Redis 7+**
-- **RabbitMQ 3.12+**
+- **Docker Desktop (Windows/Mac) or Docker Engine (Linux)**
+
+
+## 🛠️ Quick Start
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/SurmDen/NexusPay.git
+cd NexusPay
+```
+
+### 2. Start all services
+```bash
+docker-compose up --build
+```
