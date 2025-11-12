@@ -8,7 +8,7 @@ namespace Transaction.Domain.Events
         {
             TransactionId = transactionId;
             SenderId = senderId;
-            SenderId = receiverId;
+            ReceiverId = receiverId;
             Amount = amount;
 
             OccuredOn = DateTime.UtcNow;

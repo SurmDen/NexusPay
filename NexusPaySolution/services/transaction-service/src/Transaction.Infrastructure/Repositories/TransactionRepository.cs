@@ -89,7 +89,7 @@ namespace Transaction.Infrastructure.Repositories
 
             transaction.SetStatus(status);
 
-            if (errorMessage != null)
+            if (!string.IsNullOrEmpty(errorMessage))
             {
                 transaction.SetError(errorMessage);
             }

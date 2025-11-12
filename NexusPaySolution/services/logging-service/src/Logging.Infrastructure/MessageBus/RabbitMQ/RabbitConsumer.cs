@@ -18,8 +18,6 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
             _options = options.Value;
             _mediator = mediator;
 
-            string methodName = $"{nameof(RabbitConsumer)}.ctor";
-
             try
             {
 
@@ -58,9 +56,6 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
 
         public async Task Subscribe(string routingKey, string queueName)
         {
-
-            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Subscribe)}";
-
             try
             {
 
@@ -95,7 +90,6 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
 
                     try
                     {
-
                         var body = ea.Body.ToArray();
 
                         string messageString = Encoding.UTF8.GetString(body);
@@ -117,7 +111,7 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
 
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         await _channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
 
@@ -132,7 +126,7 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
                 );
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -140,8 +134,6 @@ namespace Logging.Infrastructure.MessageBus.RabbitMQ
 
         public void Dispose()
         {
-            string methodName = $"{nameof(RabbitConsumer)}.{nameof(Dispose)}";
-
             _channel?.CloseAsync().Wait();
             _channel?.Dispose();
 

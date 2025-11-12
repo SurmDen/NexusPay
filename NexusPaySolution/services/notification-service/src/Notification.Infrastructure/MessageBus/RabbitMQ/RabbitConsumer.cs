@@ -41,7 +41,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -90,7 +89,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
                     try
                     {
-
                         var body = ea.Body.ToArray();
 
                         string messageString = Encoding.UTF8.GetString(body);

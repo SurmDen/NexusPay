@@ -26,7 +26,7 @@ namespace Transaction.Application.TransactionInfo.Commands
 
                 Guid transactionId = transaction.Id;
 
-                TransactionCreatedEvent createdEvent = new TransactionCreatedEvent(transactionId, transaction.SenderUserId, transaction.ReceiverUserId, transaction.Amount);
+                TransactionCreatedEvent createdEvent = new TransactionCreatedEvent(transaction.Id, transaction.SenderUserId, transaction.ReceiverUserId, transaction.Amount);
 
                 await _mediator.Publish(createdEvent);
 

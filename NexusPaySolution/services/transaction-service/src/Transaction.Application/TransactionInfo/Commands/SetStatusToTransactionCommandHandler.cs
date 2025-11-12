@@ -20,7 +20,14 @@ namespace Transaction.Application.TransactionInfo.Commands
         {
             try
             {
-                await _repository.SetStatusToTransactionAsync(request.TransactionId, request.Status, request.ErrorMessage);
+                if (request.ErrorMessage != null)
+                {
+                    await _repository.SetStatusToTransactionAsync(request.TransactionId, request.Status, request.ErrorMessage);
+                }
+                else
+                {
+                    await _repository.SetStatusToTransactionAsync(request.TransactionId, request.Status);
+                }
 
                 await _logger.LogInfo($"transaction with id: {request.TransactionId} sets to status {request.Status}", "CreateTransactionCommandHandler.Handle");
             }

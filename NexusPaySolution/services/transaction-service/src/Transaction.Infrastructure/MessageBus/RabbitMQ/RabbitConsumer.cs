@@ -86,8 +86,6 @@ namespace Transaction.Infrastructure.MessageBus.RabbitMQ
 
                 consumer.ReceivedAsync += async (model, ea) =>
                 {
-                    string consumerMethodName = $"{nameof(RabbitConsumer)}.ReceivedAsync";
-
                     try
                     {
 

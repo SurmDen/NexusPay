@@ -13,8 +13,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
         {
             _rabbitmqOptions = options.Value;
 
-            string methodName = $"{nameof(RabbitProducer)}.ctor";
-
             try
             {
 
@@ -37,7 +35,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                 ).Wait();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -49,7 +47,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
         public async Task SendMessage(string routingKey, string message)
         {
-            string methodName = $"{nameof(RabbitProducer)}.{nameof(SendMessage)}";
 
             try
             {
@@ -73,7 +70,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                 );
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -81,7 +78,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
         public async Task SendObject<T>(string routingKey, T obj)
         {
-            string methodName = $"{nameof(RabbitProducer)}.{nameof(SendObject)}";
 
             try
             {
@@ -100,7 +96,7 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
                 await SendMessage(routingKey, message);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -108,7 +104,6 @@ namespace Notification.Infrastructure.MessageBus.RabbitMQ
 
         public void Dispose()
         {
-            string methodName = $"{nameof(RabbitProducer)}.{nameof(Dispose)}";
 
             _channel?.CloseAsync().Wait();
             _channel?.Dispose();

@@ -37,6 +37,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddOcelot(builder.Configuration);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
